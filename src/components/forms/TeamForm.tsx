@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -7,22 +8,19 @@ import { teamSchema } from "@/zod-schemas/zTeam";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { AddLawyerForm } from "../forms/LawyerForm";
+import { onAddSubmitTeam } from "@/functions/onAddSubmitTeam";
 
 // Main Team Form
-const AddTeamForm: React.FC = () => {
+export const AddTeamForm = () => {
   const form = useForm<ITeam>({
     resolver: zodResolver(teamSchema),
   });
 
-  const onSubmitTeam = (data: ITeam) => {
-    console.log("Team Data:", data);
-    form.reset(); // Clear the form after submission
-  };
+
 
   return (
-    <div className="max-w-md mx-auto">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmitTeam)} className="space-y-4">
+   <Form {...form}>
+        <form onSubmit={form.handleSubmit(onAddSubmitTeam)} className="space-y-4">
           <FormField
             control={form.control}
             name="teamName"
@@ -53,8 +51,5 @@ const AddTeamForm: React.FC = () => {
           <Button type="submit">Submit</Button>
         </form>
       </Form>
-    </div>
   );
 };
-
-export default AddTeamForm;
