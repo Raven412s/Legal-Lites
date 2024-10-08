@@ -1,9 +1,9 @@
-import Teams from "@/components/clients/Teams";
+import AddTeamForm from "@/components/forms/TeamForm";
 
 export default function Home() {
   return (
     <div>
-        <Teams />
+        <AddTeamForm />
     </div>
   );
 }
