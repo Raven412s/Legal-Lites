@@ -1,3 +1,5 @@
+import { IconType } from "react-icons";
+
 export interface ITeam {
   teamName: string;
   teamMembers: ILawyer[];  // Array of lawyer references
@@ -17,3 +19,16 @@ export interface ILawyer {
 export interface LawyerFormProps {
   onClose: () => void;
 }
+
+export interface MenuItem {
+    label: string;
+    icon: IconType;
+    link?: string;
+    children?: MenuItem[];  
+  }
+
+
+export interface SidebarProps {
+    isMinimized: boolean;
+    onToggle: () => void;
+  }
