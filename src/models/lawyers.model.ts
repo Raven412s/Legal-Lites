@@ -1,4 +1,4 @@
-import { ILawyer } from "@/interfaces/mongoose-models/lawyers";
+import { ILawyer } from "@/interfaces/interface";
 import mongoose, { Schema, Document } from "mongoose";
 
 // Lawyer Schema
@@ -31,7 +31,8 @@ const LawyerSchema = new Schema({
   },
   bciRegistrationNo: {
     type: String,
-    required: function () {
+    required: function (this: any) {
+      // Use a custom function to check if designation is Junior or Senior Counsel
       return this.designation === "Junior Counsel" || this.designation === "Senior Counsel";
     },
     default: "NA",
@@ -39,7 +40,7 @@ const LawyerSchema = new Schema({
   verified: {
     type: Boolean,
     default: false, // To be updated once OTP is verified
-  }
+  },
 });
 
 export const Lawyer = mongoose.model<ILawyer & Document>("Lawyer", LawyerSchema);

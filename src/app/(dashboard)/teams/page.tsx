@@ -1,7 +1,7 @@
-const EditTeamPage = () => {
+const ViewTeamPage = () => {
   return (
-    <div>EditTeamPage</div>
+    <div>ViewTeamPage</div>
   )
 }
 
-export default EditTeamPage
+export default ViewTeamPage
