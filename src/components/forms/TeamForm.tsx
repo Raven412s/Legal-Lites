@@ -2,126 +2,128 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox"; // Shadcn Checkbox import
-import { ITeam } from "@/interfaces/interface";
+import { onAddSubmitTeam } from "@/functions/onAddSubmitTeam";
+import { ILawyer, ITeam } from "@/interfaces/interface";
 import { teamSchema } from "@/zod-schemas/zTeam";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState, useEffect } from 'react';
 import { useForm } from "react-hook-form";
+import Select, { GroupBase, MultiValue } from 'react-select';
 import { AddLawyerForm } from "../forms/LawyerForm";
-import Select, { MultiValue, GroupBase } from 'react-select'; // Import types from react-select
-import { useState } from 'react';
-import { onAddSubmitTeam } from "@/functions/onAddSubmitTeam";
+import { fetchLawyers, updateLawyerOptions } from "@/functions/lawyer";
 
-// Define Option Type for Lawyer Options
 type OptionType = {
-  value: string;
-  label: string;
+    value: string;
+    label: string;
+    lawyer: ILawyer; // Added full lawyer object here
 };
 
-// Lawyer options with groups
-const lawyerOptions: GroupBase<OptionType>[] = [
-  {
-    label: "Frontend",
-    options: [
-      { value: '0', label: 'Angular' },
-      { value: '1', label: 'Bootstrap' },
-      { value: '2', label: 'React.js' },
-      { value: '3', label: 'Vue.js' },
-    ],
-  },
-  {
-    label: "Backend",
-    options: [
-      { value: '4', label: 'Django' },
-      { value: '5', label: 'Laravel' },
-      { value: '6', label: 'Node.js' },
-    ],
-  },
-];
-
 export const AddTeamForm = () => {
-  // Ensure selectedLawyers is correctly typed
-  const [selectedLawyers, setSelectedLawyers] = useState<MultiValue<OptionType>>([]);
+    const [lawyerOptions, setLawyerOptions] = useState<GroupBase<OptionType>[]>([]);
+    const [selectedLawyers, setSelectedLawyers] = useState<MultiValue<OptionType>>([]);
 
-  const form = useForm<ITeam>({
-    resolver: zodResolver(teamSchema),
-  });
+    const form = useForm<ITeam>({
+        resolver: zodResolver(teamSchema),
+        defaultValues: {
+            teamName: '',
+            teamMembers: [], // Array of lawyer references or objects
+        },
+    });
 
-  // Handle lawyer selection change with type
-  const handleLawyerChange = (selectedOptions: MultiValue<OptionType>) => {
-    setSelectedLawyers(selectedOptions);
-  };
+    const { register, setValue, watch, handleSubmit } = form;
 
-  // Toggle lawyer selection on checkbox click
-  const handleCheckboxToggle = (option: OptionType) => {
-    if (selectedLawyers.some(lawyer => lawyer.value === option.value)) {
-      // Remove the lawyer if already selected
-      setSelectedLawyers(prev => prev.filter(lawyer => lawyer.value !== option.value));
-    } else {
-      // Add the lawyer if not selected
-      setSelectedLawyers(prev => [...prev, option]);
-    }
-  };
+    useEffect(() => {
+        // Fetch lawyers and update options when the component mounts
+        const loadLawyers = async () => {
+            const lawyers = await fetchLawyers();
+            const options = updateLawyerOptions(lawyers);
+            setLawyerOptions([options]);
+        };
+        loadLawyers();
+    }, []);
 
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onAddSubmitTeam)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="teamName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Team Name:</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    const handleLawyerChange = (selectedOptions: MultiValue<OptionType>) => {
+        const selectedLawyersData = selectedOptions.map((option) => option.lawyer);  // Store the full lawyer object
+        setSelectedLawyers(selectedOptions);  // For displaying selected options
+        setValue('teamMembers', selectedLawyersData);  // Update form field with lawyer references
+    };
 
-        <FormItem>
-          <FormLabel>Team Members:</FormLabel>
-
-          {/* Register Lawyer Button at the top */}
-          <div className="mb-4">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button type="button">Register Lawyer</Button>
-              </DialogTrigger>
-              <DialogContent>
-                <AddLawyerForm onClose={() => {}} />
-              </DialogContent>
-            </Dialog>
-          </div>
-
-          {/* Multi-Select for Lawyers with grouped options and Shadcn UI Checkbox */}
-          <Select
-            isMulti
-            options={lawyerOptions}
-            value={selectedLawyers}
-            onChange={handleLawyerChange}
-            className="basic-multi-select"
-            classNamePrefix="select"
-            placeholder="Select lawyers..."
-            closeMenuOnSelect={false}
-            hideSelectedOptions={false}
-            formatOptionLabel={(option: OptionType) => (
-              <div className="flex items-center">
-                <input
-                type="checkbox"
-                  checked={selectedLawyers.some((selected) => selected.value === option.value)}
-                  onChange={() => handleCheckboxToggle(option)} // Toggle on checkbox click
-                  className="mr-2 size-4"
+    return (
+        <Form {...form}>
+            <form onSubmit={handleSubmit(onAddSubmitTeam)} className="space-y-4">
+                <FormField
+                    control={form.control}
+                    name="teamName"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Team Name:</FormLabel>
+                            <FormControl>
+                                <Input {...field} className="bg-zinc-800/90 px-2 text-slate-50" placeholder="Enter team name..." />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
                 />
-                {option.label} {/* Return the label string */}
-              </div>
-            )}
-          />
-        </FormItem>
 
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
-  );
+                <FormItem>
+                    <FormLabel>Team Members:</FormLabel>
+                    {/* <div className="mb-4">
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button type="button" className="bg-zinc-900">Register Lawyer</Button>
+                            </DialogTrigger>
+                            <DialogContent className="card w-[90%] bg-muted-foreground border-primary-foreground border-dashed border-2 backdrop-blur-sm" style={{ boxShadow: 'rgba(128, 128, 128, 0.84) 0px 3px 8px' }}>
+                                <AddLawyerForm onClose={() => {}} />
+                            </DialogContent>
+                        </Dialog>
+                    </div> */}
+
+                    <Select
+                        isMulti
+                        options={lawyerOptions}
+                        value={selectedLawyers}
+                        onChange={handleLawyerChange}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                        placeholder="Select lawyers..."
+                        closeMenuOnSelect={false}
+                        hideSelectedOptions={false}
+                        styles={{
+                            control: (provided) => ({
+                                ...provided,
+                                backgroundColor: 'rgb(39, 39, 42)',
+                                color: '#f8fafc',
+                                padding: '0 0.5rem',
+                            }),
+                            input: (provided) => ({
+                                ...provided,
+                                color: '#f8fafc',
+                            }),
+                            option: (provided, state) => ({
+                                ...provided,
+                                backgroundColor: state.isFocused ? 'rgb(39, 39, 42 )' : 'rgb(39, 39, 42 )',
+                                color: '#f8fafc',
+                            }),
+                            menu: (provided) => ({
+                                ...provided,
+                                backgroundColor: 'rgb(39, 39, 42)',
+                            }),
+                        }}
+                        formatOptionLabel={(option: OptionType) => (
+                            <div className="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    checked={selectedLawyers.some((selected) => selected.value === option.value)}
+                                    className="mr-2 size-4"
+                                />
+                                {option.label}
+                            </div>
+                        )}
+                    />
+                </FormItem>
+
+                <Button type="submit" className="bg-zinc-900">Submit</Button>
+            </form>
+        </Form>
+    );
 };

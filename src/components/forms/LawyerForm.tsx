@@ -7,16 +7,25 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { lawyerSchema,  } from "@/zod-schemas/zLawyer";
 import { ILawyer } from "@/interfaces/interface";
 import { LawyerFormProps } from "@/interfaces/interface";
+import { submitLawyerForm } from "@/functions/lawyer";
 
 export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
   const form = useForm<ILawyer>({
     resolver: zodResolver(lawyerSchema),
   });
 
-  const onSubmitLawyer = (data: ILawyer) => {
-    console.log("Lawyer Data:", data);
-    onClose(); // Close the modal on success
-    form.reset(); // Clear the form
+  const onSubmitLawyer = async (data: ILawyer) => {
+    try {
+      // Call the submit function to send the data
+      const newLawyer = await submitLawyerForm(data);
+      console.log("New Lawyer Created:", newLawyer);
+
+      // Close the modal and reset the form on success
+      onClose();
+      form.reset();
+    } catch (error) {
+      console.error("Failed to submit lawyer form:", error);
+    }
   };
 
   return (
@@ -30,11 +39,11 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
               <FormLabel>Title:</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-zinc-800 text-slate-50">
                     <SelectValue placeholder="Select a title" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent>
+                <SelectContent className="bg-zinc-800 text-slate-50">
                   <SelectItem value="Adv.">Adv.</SelectItem>
                   <SelectItem value="Mr.">Mr.</SelectItem>
                   <SelectItem value="Mrs.">Mrs.</SelectItem>
@@ -54,7 +63,7 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
             <FormItem>
               <FormLabel>Name:</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} className="bg-zinc-800 px-2 text-slate-50" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -68,7 +77,7 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
             <FormItem>
               <FormLabel>Phone:</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} className="bg-zinc-800 px-2 text-slate-50" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -82,7 +91,7 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
             <FormItem>
               <FormLabel>Email:</FormLabel>
               <FormControl>
-                <Input {...field} type="email" />
+                <Input {...field} type="email" className="bg-zinc-800 px-2 text-slate-50" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -101,6 +110,7 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
                   {...field}
                   value={field.value ? field.value.toISOString().split('T')[0] : ''}
                   onChange={(e) => field.onChange(new Date(e.target.value))}
+                  className="bg-zinc-800 px-2 text-slate-50"
                 />
               </FormControl>
               <FormMessage />
@@ -116,16 +126,16 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
               <FormLabel>Designation:</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-zinc-800 text-slate-50">
                     <SelectValue placeholder="Select a designation" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent>
-                  <SelectItem value="Junior Counsel">Junior Counsel</SelectItem>
-                  <SelectItem value="Senior Counsel">Senior Counsel</SelectItem>
-                  <SelectItem value="Para-Legal">Para-Legal</SelectItem>
-                  <SelectItem value="Office Executive">Office Executive</SelectItem>
-                  <SelectItem value="Other">Other</SelectItem>
+                <SelectContent className="bg-zinc-800 text-slate-50">
+                  <SelectItem value="Junior Counsel" className="hover:rounded-md hover:border hover:border-white hover:bg-zinc-800">Junior Counsel</SelectItem>
+                  <SelectItem value="Senior Counsel" className="hover:rounded-md hover:border hover:border-white hover:bg-zinc-800">Senior Counsel</SelectItem>
+                  <SelectItem value="Para-Legal" className="hover:rounded-md hover:border hover:border-white hover:bg-zinc-800">Para-Legal</SelectItem>
+                  <SelectItem value="Office Executive" className="hover:rounded-md hover:border hover:border-white hover:bg-zinc-800">Office Executive</SelectItem>
+                  <SelectItem value="Other" className="hover:rounded-md hover:border hover:border-white !hover:bg-zinc-800">Other</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -140,14 +150,14 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
             <FormItem>
               <FormLabel>BCI Registration No.:</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} className="bg-zinc-800 px-2 text-slate-50" />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <Button type="submit">Submit</Button>
+        <Button type="submit" className="bg-zinc-900">Submit</Button>
       </form>
     </Form>
   );

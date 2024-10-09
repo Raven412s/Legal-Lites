@@ -5,18 +5,25 @@ import axios from "axios";
 // Function to submit the form data to the API
 export const onAddSubmitTeam = async (data: ITeam): Promise<ITeam> => {
     console.log("form data", data);
-  try {
-    const response = await axios.post<ITeam>("/api/teams", data);
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      // Axios-specific error handling
-      const message = error.response?.data?.message || "Failed to submit team";
-      throw new Error(`API Error: ${message}`);
-    } else {
-      throw new Error("Network or unknown error occurred");
-    }
-  }
+    try {
+        console.log("Submitting Team data:", data);
+
+        // Send POST request to create a new lawyer
+        const response = await axios.post('/api/teams', data, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        // Log the response for debugging
+        console.log('Team created:', response.data);
+
+        // Return the newly created lawyer object
+        return response.data;
+      } catch (error) {
+        console.error('Error submitting team form:', error);
+        throw new Error('Failed to submit team form');
+      }
 };
 
 // Hook to handle the mutation with a query key for teams

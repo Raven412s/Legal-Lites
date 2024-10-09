@@ -7,7 +7,6 @@ const MONGO_URI = process.env.MONGO_URI || '';
  * Ensures the connection is only established once and doesn't reconnect on subsequent calls.
  */
 export const connectToDatabase = async (): Promise<void> => {
-  // Check the current connection status
   if (mongoose.connection.readyState === 1) {
     console.log('Already connected to MongoDB.');
     return;
@@ -19,7 +18,6 @@ export const connectToDatabase = async (): Promise<void> => {
   }
 
   try {
-    // Connect to MongoDB if not already connected or connecting
     await mongoose.connect(MONGO_URI);
     console.log('Connected to MongoDB successfully.');
   } catch (error) {

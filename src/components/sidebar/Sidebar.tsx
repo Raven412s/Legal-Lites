@@ -8,9 +8,11 @@ import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const Sidebar: React.FC<SidebarProps> = ({ isMinimized, onToggle }) => {
   const [openItems, setOpenItems] = useState<{ [key: string]: boolean }>({});
+  const router = useRouter();
 
   const handleToggle = (label: string) => {
     setOpenItems((prev) => ({ ...prev, [label]: !prev[label] }));
@@ -25,6 +27,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMinimized, onToggle }) => {
             className={`w-full justify-start text-gray-300 hover:bg-gray-700 rounded-md ${
               isMinimized ? 'justify-center p-2' : 'px-4'
             }`}
+            onClick={() => !item.children && item.link && router.push(item.link)}
           >
             <item.icon size={24} />
             {!isMinimized && (

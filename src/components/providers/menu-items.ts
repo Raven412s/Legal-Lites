@@ -1,6 +1,6 @@
 // menuItems.ts
 import { MenuItem } from '@/interfaces/interface';
-import { FaBell, FaCalendarAlt, FaHome, FaTasks, FaUser, FaUsers, FaChevronDown, FaChevronRight } from 'react-icons/fa';
+import { FaHome, FaTasks, FaUser, FaUsers } from 'react-icons/fa';
 
 const menuItems: MenuItem[] = [
   { label: 'Home', icon: FaHome, link: '/home' },
@@ -8,13 +8,18 @@ const menuItems: MenuItem[] = [
     label: 'Teams',
     icon: FaUsers,
     children: [
-      { label: 'Manage Team', icon: FaTasks, link: '/teams/view' },
+      { label: 'Manage Team', icon: FaTasks, link: '/teams' },
       { label: 'Create Team', icon: FaTasks, link: '/teams/add' },
     ],
   },
-  { label: 'Profile', icon: FaUser, link: '/profile' },
-  { label: 'Appointments', icon: FaCalendarAlt, link: '/appointments' },
-  { label: 'Notifications', icon: FaBell, link: '/notifications' },
+  {
+    label: 'Lawyers',
+    icon: FaUser,
+    children: [
+      { label: 'Manage Lawyer', icon: FaTasks, link: '/lawyers' },
+      { label: 'Create Lawyer', icon: FaTasks, link: '/lawyers/add' },
+    ],
+  },
 ];
 
 export default menuItems;

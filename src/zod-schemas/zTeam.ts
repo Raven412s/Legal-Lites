@@ -1,9 +1,12 @@
 import { z } from "zod";
+import { ILawyer } from "@/interfaces/interface";
 
-// Team Zod Schema
-const teamSchema = z.object({
-    teamName: z.string().min(1, "Team Name is required"),
-    teamMembers: z.array(z.string()).min(1, "At least one team member is required"),
-  });
+// Adjust the schema to expect ILawyer[] for teamMembers
+export const teamSchema = z.object({
+  teamName: z.string(),
+  teamMembers: z.array(z.object({
+    _id: z.string(),
+    name: z.string(),
 
-  export { teamSchema };
+  })),
+});
