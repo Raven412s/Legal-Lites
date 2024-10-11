@@ -58,7 +58,7 @@ export const AddTeamForm = () => {
                         <FormItem>
                             <FormLabel>Team Name:</FormLabel>
                             <FormControl>
-                                <Input {...field} className="bg-zinc-800/90 px-2 text-slate-50" placeholder="Enter team name..." />
+                                <Input {...field} className="px-2 text-slate-50" placeholder="Enter team name..." />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -122,7 +122,7 @@ export const AddTeamForm = () => {
                     />
                 </FormItem>
 
-                <Button type="submit" className="bg-zinc-900">Submit</Button>
+                <Button type="submit">Submit</Button>
             </form>
         </Form>
     );
