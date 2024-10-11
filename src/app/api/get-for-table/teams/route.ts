@@ -1,5 +1,6 @@
 import { connectToDatabase } from "@/functions/connectDB";
-import { Team } from "@/models/Teams.model";
+import { Team } from "@/models/teams.model";
+
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {

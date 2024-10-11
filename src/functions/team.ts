@@ -2,25 +2,6 @@ import { ITeam } from "@/interfaces/interface";
 import axios from "axios";
 import { toast } from "sonner";
 
-// This function maps the Teams into a select-friendly format
-// This function maps the Teams into a select-friendly format
-export const populateTeamOptions = (Teams: ITeam[]) => {
-    return Teams.map((Team) => ({
-      value: Team._id, // Use Team._id (or bciRegistrationNo) as reference
-      label: `${Team.teamName}`,
-      Team, // Store the full Team object here in case needed later
-    }));
-  };
-
-
-// Function that updates options, returning them for the component to use
-export const updateTeamOptions = (Teams: ITeam[]) => {
-  return {
-    label: "Teams",
-    options: populateTeamOptions(Teams),  // Use the mapped options
-  };
-};
-
 // Fetch function to get the list of Teams
 export const fetchTeams = async () => {
     console.log("Team fetching start");

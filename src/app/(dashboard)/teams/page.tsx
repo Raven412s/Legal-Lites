@@ -14,7 +14,7 @@ import { TeamColumns } from '@/columns/teamColumns'
 import { toast } from 'sonner'
 
 interface TeamsResponse {
-    Teams: ITeam[];
+    teams: ITeam[];
     total: number;
   }
 const ViewTeamPage = () => {
