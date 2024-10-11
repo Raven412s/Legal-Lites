@@ -1,5 +1,6 @@
 import { ILawyer } from "@/interfaces/interface";
 import axios from "axios";
+import { toast } from "sonner";
 
 // This function maps the lawyers into a select-friendly format
 // This function maps the lawyers into a select-friendly format
@@ -58,7 +59,7 @@ export const submitLawyerForm = async (data: ILawyer) => {
     });
 
     // Log the response for debugging
-    console.log('Lawyer created:', response.data);
+    toast.success("New Lawyer Created");
 
     // Return the newly created lawyer object
     return response.data;

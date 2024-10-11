@@ -3,6 +3,7 @@ import { Lawyer } from '@/models/lawyers.model';  // Import the Lawyer model
 import { lawyerSchema } from '@/zod-schemas/zLawyer';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { ObjectId } from 'mongodb';
 // Handler for the GET request to fetch the list of lawyers
 export async function GET() {
   try {
@@ -52,5 +53,41 @@ export async function POST(req: Request) {
       }
 
       return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+    }
+  }
+
+  export async function DELETE(request: Request) {
+    try {
+      await connectToDatabase();
+      const { ids } = await request.json(); // Fetching `ids` from the request body
+
+      if (!ids || ids.length === 0) {
+        return NextResponse.json({ success: false, message: 'ID or IDs are required' }, { status: 400 });
+      }
+
+      // Handle single or multiple IDs
+      if (Array.isArray(ids)) {
+        // If it's an array, delete multiple users
+        const objectIds = ids.map((id) => new ObjectId(id));
+        const result = await Lawyer.deleteMany({ _id: { $in: objectIds } });
+
+        if (result.deletedCount === 0) {
+          return NextResponse.json({ success: false, message: 'No users found to delete' }, { status: 404 });
+        }
+
+        return NextResponse.json({ success: true, message: `${result.deletedCount} users deleted successfully` }, { status: 200 });
+      } else {
+        // If it's a single id, delete one user
+        const deletedUser = await Lawyer.findByIdAndDelete(new ObjectId(ids));
+
+        if (!deletedUser) {
+          return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
+        }
+
+        return NextResponse.json({ success: true, message: 'User deleted successfully' }, { status: 200 });
+      }
+    } catch (error: any) {
+      console.error(`Error deleting user(s): ${error.message}`);
+      return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
   }

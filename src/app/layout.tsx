@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 
 const geistSans = localFont({
@@ -28,10 +29,18 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body
+               <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
+      <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+
           {children}
+        </ThemeProvider>
       </body>
     </html>
   );

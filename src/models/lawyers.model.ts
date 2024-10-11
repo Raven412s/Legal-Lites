@@ -39,6 +39,10 @@ const LawyerSchema = new Schema({
   verified: {
     type: Boolean,
     default: false
+  },
+  _createdAt: {
+    type: Date,
+    default: Date.now
   }
 });
 

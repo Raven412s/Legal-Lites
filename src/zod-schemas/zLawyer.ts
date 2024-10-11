@@ -19,6 +19,16 @@ const lawyerSchema = z.object({
   }),
   designation: z.enum(["Junior Counsel", "Senior Counsel", "Para-Legal", "Office Executive", "Other"]),
   bciRegistrationNo: z.string().optional().or(z.literal("NA")),
+  _createdAt: z.union([z.string(), z.date()]).transform((val) => {
+    if (typeof val === "string") {
+      const parsedDate = new Date(val);
+      if (isNaN(parsedDate.getTime())) {
+        throw new Error("Invalid date format. Expected YYYY-MM-DD.");
+      }
+      return parsedDate;
+    }
+    return val;
+  }).default(() => new Date()),
 }).refine((data) => {
   if (["Junior Counsel", "Senior Counsel"].includes(data.designation) && (!data.bciRegistrationNo || data.bciRegistrationNo === "NA")) {
     return false;
