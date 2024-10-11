@@ -6,6 +6,7 @@ interface ITeamDocument extends ITeam, Document {}
 
 // Team Schema
 const TeamSchema: Schema = new Schema({
+    
   teamName: {
     type: String,
     required: true,

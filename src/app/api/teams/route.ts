@@ -35,13 +35,24 @@ export async function POST(req: Request) {
 
 // **GET method (Fetch all teams)**
 export async function GET() {
-  await connectToDatabase();
+    try {
+      // Connect to MongoDB
+      await connectToDatabase();
 
-  try {
-    const teams = await Team.find(); // Fetch all teams from the database
-    return NextResponse.json(teams, { status: 200 });
-  } catch (error: any) {
-    console.error('Error fetching teams:', error);
-    return NextResponse.json({ message: 'Internal server error', error: error.message }, { status: 500 });
+      // Fetch the list of Teams from the database
+      const Teams = await Team.find();  // You can also apply filters or pagination here if necessary
+      const TeamCount = Teams.length;
+
+      // Return the list of Teams and count as JSON
+      return new Response(JSON.stringify({ Teams, count: TeamCount }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } catch (error) {
+      console.error('Error fetching Teams:', error);
+      return new Response(
+        JSON.stringify({ message: 'Internal Server Error' }),
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
   }
-}

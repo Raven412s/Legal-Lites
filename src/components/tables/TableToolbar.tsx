@@ -27,6 +27,7 @@ interface DataTableToolbarProps<TData> {
     setSearch: (search: string) => void;
     search: string
     API:string
+    QueryKey:string
 }
 
 export function DataTableToolbar<TData>({
@@ -37,7 +38,10 @@ export function DataTableToolbar<TData>({
   linkToAdd,
     refetch,
   setSearch,
-  exportToExcel,search
+  exportToExcel,
+  search,
+  QueryKey
+
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters?.length > 0;
   const queryClient = useQueryClient();
@@ -66,7 +70,7 @@ export function DataTableToolbar<TData>({
 
       try {
         await deleteByToolbar(selectedRows,API);
-        queryClient.invalidateQueries({ queryKey: ["Lawyers"] });
+        queryClient.invalidateQueries({ queryKey: [`${QueryKey}`] });
         toast.success(`${selectedRows.length} ${filter} deleted successfully`);
         table.resetRowSelection();
       } catch (error) {

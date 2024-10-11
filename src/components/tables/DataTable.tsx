@@ -49,6 +49,7 @@ interface DataTableProps<TData, TValue> {
   totalData: number;
     total: number;
     dataLoading: boolean
+    QueryKey: string
 }
 
 export function DataTable<TData, TValue>({
@@ -72,7 +73,8 @@ export function DataTable<TData, TValue>({
     deletePermission,
     editPermission,
     search,
-    dataLoading
+    dataLoading,
+    QueryKey,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -192,6 +194,7 @@ export function DataTable<TData, TValue>({
               setSearch={setSearch}
               search={search}
               API={API}
+              QueryKey={QueryKey}
       />
       <div className="overflow-y-auto rounded-md border shadow-inner max-w-[calc(100vw-340px)] custom-scrollbar">
      <Table className="min-h-max">

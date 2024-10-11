@@ -68,6 +68,7 @@ console.log("lawyers",data)
       <div className="flex items-center justify-center rounded-lg  ">
       {!isLoading ? (
               <DataTable
+              QueryKey='lawyers'
               API='/api/lawyers'
               filter='lawyer'
               data={data?.lawyers!}

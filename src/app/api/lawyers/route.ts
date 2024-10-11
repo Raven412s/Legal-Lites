@@ -6,26 +6,28 @@ import { z } from 'zod';
 import { ObjectId } from 'mongodb';
 // Handler for the GET request to fetch the list of lawyers
 export async function GET() {
-  try {
-    // Connect to MongoDB
-    await connectToDatabase();
+    try {
+      // Connect to MongoDB
+      await connectToDatabase();
 
-    // Fetch the list of lawyers from the database
-    const lawyers = await Lawyer.find();  // You can also apply filters or pagination here if necessary
+      // Fetch the list of lawyers from the database
+      const lawyers = await Lawyer.find();  // You can also apply filters or pagination here if necessary
+      const lawyerCount = lawyers.length;
 
-    // Return the list of lawyers as JSON
-    return new Response(JSON.stringify(lawyers), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    });
-  } catch (error) {
-    console.error('Error fetching lawyers:', error);
-    return new Response(
-      JSON.stringify({ message: 'Internal Server Error' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+      // Return the list of lawyers and count as JSON
+      return new Response(JSON.stringify({ lawyers, count: lawyerCount }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } catch (error) {
+      console.error('Error fetching lawyers:', error);
+      return new Response(
+        JSON.stringify({ message: 'Internal Server Error' }),
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
   }
-}
+
 
 // Handler for the POST request to create a new lawyer
 export async function POST(req: Request) {

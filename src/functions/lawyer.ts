@@ -23,25 +23,37 @@ export const updateLawyerOptions = (lawyers: ILawyer[]) => {
 
 // Fetch function to get the list of lawyers
 export const fetchLawyers = async () => {
-    console.log("lawyer fetching start")
+    console.log("lawyer fetching start");
     try {
-        console.log("getting response")
+      console.log("getting response");
+
+      // Make a GET request to the '/api/lawyers' endpoint
       const response = await fetch('/api/lawyers', {
         method: 'GET',
         headers: {
-            "Content-Type": "application/json",
-          },
+          "Content-Type": "application/json",
+        },
       });
-      // If the response status is OK (200), return the lawyers data
+
+      // Check if the response is not OK (status is not 200)
       if (!response.ok) {
         throw new Error('Failed to fetch lawyers');
       }
-      const lawyers = await response.json()
-      console.log("Lawyers--->", lawyers)
-      return lawyers;
+
+      // Parse the response JSON which contains both `lawyers` and `count`
+      const data = await response.json();
+      const { lawyers, count } = data;
+
+      console.log("Lawyers--->", lawyers);
+      console.log("Count--->", count);
+
+      // Return both lawyers and count
+      return { lawyers, count };
     } catch (error) {
       console.error('Error fetching lawyers:', error);
-      return [];  // Return an empty array in case of error
+
+      // Return an empty object with both `lawyers` and `count` in case of error
+      return { lawyers: [], count: 0 };
     }
   };
 

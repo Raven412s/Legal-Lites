@@ -36,7 +36,7 @@ export const AddTeamForm = () => {
         // Fetch lawyers and update options when the component mounts
         const loadLawyers = async () => {
             const lawyers = await fetchLawyers();
-            const options = updateLawyerOptions(lawyers);
+            const options = updateLawyerOptions(lawyers?.lawyers);
             setLawyerOptions([options]);
         };
         loadLawyers();
