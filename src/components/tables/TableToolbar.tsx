@@ -12,37 +12,33 @@ import { TableViewOptions } from './TableViewOptions';
 
 import { deleteByToolbar } from '@/actions/deleteByToolbar';
 import { CalendarDatePicker } from '../calendar-date-picker';
-import { AddLawyerForm } from '@/components/forms/Lawyer/AddLawyerForm'; // Import LawyerForm
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'; // Import Dialog components
 
 interface DataTableToolbarProps<TData> {
-    filter:string,
+  filter: string;
   table: Table<TData>;
-  filters: {
-    name: string,
-    value: string
-  }[];
+  filters: { name: string, value: string }[];
   linkToAdd: string;
   refetch: Function;
-    exportToExcel: Function;
-    setSearch: (search: string) => void;
-    search: string
-    API:string
-    QueryKey:string
+  exportToExcel: Function;
+  setSearch: (search: string) => void;
+  search: string;
+  API: string;
+  QueryKey: string;
+  FormComponent?: React.ElementType; // Add FormComponent as a prop
 }
 
 export function DataTableToolbar<TData>({
-    filter,
-    API,
+  filter,
+  API,
   table,
   filters,
-  linkToAdd,
-    refetch,
+  refetch,
   setSearch,
   exportToExcel,
   search,
-  QueryKey
-
+  QueryKey,
+  FormComponent // Receive the FormComponent as a prop
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters?.length > 0;
   const queryClient = useQueryClient();
@@ -57,28 +53,20 @@ export function DataTableToolbar<TData>({
     table.getColumn("_createdAt")?.setFilterValue([from, to]); // Filter based on date range
   };
 
-  // Function to handle deletion of selected rows
   const deleteMultiByToolbar = async () => {
-    const selectedRows = table
-      .getFilteredSelectedRowModel()
-      .rows.map((row: any) => row.original._id);
+    const selectedRows = table.getFilteredSelectedRowModel().rows.map((row: any) => row.original._id);
 
     if (selectedRows.length > 0) {
-      // Show confirmation before deleting
-      const confirmed = confirm(
-        `Are you sure you want to delete ${selectedRows.length} ${filter}?`
-      );
+      const confirmed = confirm(`Are you sure you want to delete ${selectedRows.length} ${filter}?`);
       if (!confirmed) return;
 
       try {
-        await deleteByToolbar(selectedRows,API);
+        await deleteByToolbar(selectedRows, API);
         queryClient.invalidateQueries({ queryKey: [`${QueryKey}`] });
         toast.success(`${selectedRows.length} ${filter} deleted successfully`);
         table.resetRowSelection();
       } catch (error) {
         console.error("Error deleting users:", error);
-
-        // Show error toast notification
         toast.error("An error occurred while deleting users");
       }
     }
@@ -87,7 +75,7 @@ export function DataTableToolbar<TData>({
   return (
     <div className="flex flex-wrap items-center justify-between">
       <div className="flex flex-1 flex-wrap items-center gap-2">
-       <Input
+        <Input
           placeholder="Search here..."
           value={search ?? ""}
           onChange={(event) => setSearch(event.target.value)}
@@ -111,7 +99,7 @@ export function DataTableToolbar<TData>({
             <Cross2Icon className="ml-2 h-4 w-4" />
           </Button>
         )}
-          <CalendarDatePicker
+        <CalendarDatePicker
           date={dateRange}
           onDateSelect={handleDateSelect}
           className="h-9 w-[250px]"
@@ -179,7 +167,7 @@ export function DataTableToolbar<TData>({
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[600px] p-6">
-            <AddLawyerForm lawyerId='' onClose={() => setIsDialogOpen(false)} />
+            {FormComponent && <FormComponent onClose={() => setIsDialogOpen(false)} />}
           </DialogContent>
         </Dialog>
       </div>

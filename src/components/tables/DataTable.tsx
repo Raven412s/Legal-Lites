@@ -23,6 +23,7 @@ import { utils, writeFile } from 'xlsx';
 import { DataTablePagination } from "./TablePagination";
 import { DataTableToolbar } from "./TableToolbar";
 import Actions from "../actions";
+import { AddLawyerForm } from "../forms/Lawyer/AddLawyerForm";
 
 interface DataTableProps<TData, TValue> {
     filter:string,
@@ -50,6 +51,7 @@ interface DataTableProps<TData, TValue> {
     total: number;
     dataLoading: boolean
     QueryKey: string
+    FormComponent?: React.ElementType;
 }
 
 export function DataTable<TData, TValue>({
@@ -75,6 +77,7 @@ export function DataTable<TData, TValue>({
     search,
     dataLoading,
     QueryKey,
+    FormComponent
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -185,6 +188,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-4 min-w-max ">
       <DataTableToolbar
+       FormComponent={FormComponent}
       filter={filter}
         table={table}
         filters={filters!}
@@ -197,7 +201,7 @@ export function DataTable<TData, TValue>({
               QueryKey={QueryKey}
       />
       <div className="overflow-y-auto rounded-md border shadow-inner max-w-[calc(100vw-340px)] custom-scrollbar">
-     <Table className="min-w-max relative">
+     <Table className="w-[80vw] relative">
   {/* Table Header */}
   <TableHeader className="sticky top-0">
     {table.getHeaderGroups().map((headerGroup) => (

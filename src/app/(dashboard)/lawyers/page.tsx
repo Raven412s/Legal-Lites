@@ -12,6 +12,7 @@ import { getAllLawyers } from '@/actions/getAllLawyers'
 import { LawyerColumns } from '@/columns/lawyerColumns'
 import { toast } from 'sonner'
 import { deleteByID } from '@/actions/deleteByID'
+import { AddLawyerForm } from '@/components/forms/Lawyer/AddLawyerForm'
 
 interface LawyersResponse {
     lawyers: ILawyer[];
@@ -68,6 +69,7 @@ console.log("lawyers",data)
       <div className="flex items-center justify-center rounded-lg  ">
       {!isLoading ? (
               <DataTable
+              FormComponent={AddLawyerForm}
               QueryKey='lawyers'
               API='/api/lawyers'
               filter='lawyer'

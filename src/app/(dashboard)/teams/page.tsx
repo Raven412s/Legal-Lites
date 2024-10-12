@@ -12,6 +12,7 @@ import { deleteByID } from '@/actions/deleteByID'
 import { getAllTeams } from '@/actions/getAllTeams'
 import { TeamColumns } from '@/columns/teamColumns'
 import { toast } from 'sonner'
+import { AddTeamForm } from '@/components/forms/TeamForm'
 
 interface TeamsResponse {
     teams: ITeam[];
@@ -68,6 +69,7 @@ console.log("Teams",data)
       <div className="flex items-center justify-center rounded-lg  ">
       {!isLoading ? (
               <DataTable
+              FormComponent={AddTeamForm}
               QueryKey='Teams'
               API='/api/teams'
               filter='teams'
