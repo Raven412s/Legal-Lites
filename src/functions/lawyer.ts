@@ -80,3 +80,24 @@ export const submitLawyerForm = async (data: ILawyer) => {
     throw new Error('Failed to submit lawyer form');
   }
 };
+export const updateLawyerForm = async (lawyerId: string, data: ILawyer) => {
+  try {
+    console.log("Updating lawyer data:", data);
+
+    // Send PUT request to update the lawyer by ID
+    const response = await axios.put(`/api/lawyers/${lawyerId}`, data, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // Log the response for debugging
+    toast.success("Lawyer Updated Successfully");
+
+    // Return the updated lawyer object
+    return response.data;
+  } catch (error) {
+    console.error('Error updating lawyer form:', error);
+    throw new Error('Failed to update lawyer form');
+  }
+};

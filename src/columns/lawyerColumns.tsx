@@ -42,16 +42,22 @@ export const LawyerColumns = (expandedRows: any, setExpandedRows: any) => [
     enableHiding: false,
 },
 //   name
-  {
+{
     header: () => <span className="w-max">Name</span>,
-    accessorKey: "name",
-    cell: (info: any) => (
-      <span className="min-w-[150px] w-fit whitespace-nowrap overflow-hidden text-ellipsis">
-        {info.getValue()?.toString() || "N/A"}
-      </span>
-    ),
+    accessorKey: "name", // Accessor for name
+    cell: ({ row }: { row: any }) => {
+      const title = row.original.title; // Access the title from the original row data
+      const name = row.getValue("name");
+      return (
+        <span className="min-w-[150px] w-fit whitespace-nowrap overflow-hidden text-ellipsis">
+          {title ? `${title} ${name}` : name || "N/A"}  {/* Concatenate title and name */}
+        </span>
+      );
+    },
     enableHiding: false,
-  },
+},
+
+
 //   designation
   {
     header: () => <span className="w-max">Designation</span>,

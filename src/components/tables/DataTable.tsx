@@ -183,7 +183,7 @@ export function DataTable<TData, TValue>({
 };
 
   return (
-    <div className="space-y-4 min-w-max">
+    <div className="space-y-4 min-w-max ">
       <DataTableToolbar
       filter={filter}
         table={table}
@@ -197,9 +197,9 @@ export function DataTable<TData, TValue>({
               QueryKey={QueryKey}
       />
       <div className="overflow-y-auto rounded-md border shadow-inner max-w-[calc(100vw-340px)] custom-scrollbar">
-     <Table className="min-h-max">
+     <Table className="min-w-max relative">
   {/* Table Header */}
-  <TableHeader>
+  <TableHeader className="sticky top-0">
     {table.getHeaderGroups().map((headerGroup) => (
       <TableRow key={headerGroup.id}>
         {headerGroup.headers.map((header) => (

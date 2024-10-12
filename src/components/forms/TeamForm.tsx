@@ -1,16 +1,14 @@
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { fetchLawyers, updateLawyerOptions } from "@/functions/lawyer";
 import { onAddSubmitTeam } from "@/functions/onAddSubmitTeam";
 import { ILawyer, ITeam } from "@/interfaces/interface";
 import { teamSchema } from "@/zod-schemas/zTeam";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
 import Select, { GroupBase, MultiValue } from 'react-select';
-import { AddLawyerForm } from "../forms/LawyerForm";
-import { fetchLawyers, updateLawyerOptions } from "@/functions/lawyer";
 
 type OptionType = {
     value: string;

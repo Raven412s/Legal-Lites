@@ -21,6 +21,7 @@ export interface ILawyer {
 
 export interface LawyerFormProps {
   onClose: () => void;
+  lawyerId: string
 }
 
 export interface MenuItem {

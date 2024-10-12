@@ -6,13 +6,14 @@ import { Input } from "@/components/ui/input";
 import React, { useState } from "react";
 import { FileDown, PlusCircle, RefreshCcw, TrashIcon } from "lucide-react";
 import { TableFacetedFilter } from "./TableFacetedFilter";
-import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner"; // Import toast from Sonner
 import { TableViewOptions } from './TableViewOptions';
 
 import { deleteByToolbar } from '@/actions/deleteByToolbar';
 import { CalendarDatePicker } from '../calendar-date-picker';
+import { AddLawyerForm } from '@/components/forms/Lawyer/AddLawyerForm'; // Import LawyerForm
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'; // Import Dialog components
 
 interface DataTableToolbarProps<TData> {
     filter:string,
@@ -49,6 +50,7 @@ export function DataTableToolbar<TData>({
     from: new Date(new Date().getFullYear(), 0, 1),
     to: new Date(),
   });
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleDateSelect = ({ from, to }: { from: Date; to: Date }) => {
     setDateRange({ from, to });
@@ -170,9 +172,16 @@ export function DataTableToolbar<TData>({
           </Tooltip.Provider>
         </div>
 
-        <Link href={`${linkToAdd}/add`}>
-          <PlusCircle className="w-6 h-6 text-muted-foreground" />
-        </Link>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button variant="ghost" className="hover:bg-transparent p-0">
+              <PlusCircle className="w-6 h-6 text-muted-foreground" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[600px] p-6">
+            <AddLawyerForm lawyerId='' onClose={() => setIsDialogOpen(false)} />
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

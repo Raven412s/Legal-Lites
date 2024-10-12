@@ -1,42 +1,80 @@
+import { getLawyerById, } from "@/actions/getLawyerByID";
 import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
+import { updateLawyerForm } from "@/functions/lawyer";
+import { ILawyer, LawyerFormProps } from "@/interfaces/interface";
+import { lawyerSchema } from "@/zod-schemas/zLawyer";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { lawyerSchema,  } from "@/zod-schemas/zLawyer";
-import { ILawyer } from "@/interfaces/interface";
-import { LawyerFormProps } from "@/interfaces/interface";
-import { submitLawyerForm } from "@/functions/lawyer";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
-export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
- const router = useRouter()
+export const EditLawyerForm: React.FC<LawyerFormProps> = ({ onClose, lawyerId }) => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const form = useForm<ILawyer>({
+  const editLawyerForm = useForm<ILawyer>({
     resolver: zodResolver(lawyerSchema),
+    defaultValues: {
+      title: "Mr.",
+      name: "",
+      phone: "",
+      email: "",
+      dob: undefined,
+      designation: "Senior Counsel",
+      bciRegistrationNo: ""
+    }
   });
 
+  // Load the lawyer data when the component mounts
+  useEffect(() => {
+    if (lawyerId) {
+      setIsLoading(true);
+      getLawyerById(lawyerId)
+        .then((lawyer) => {
+          // Set the form values using setValue for each field
+          editLawyerForm.setValue("title", lawyer.title);
+          editLawyerForm.setValue("name", lawyer.name);
+          editLawyerForm.setValue("phone", lawyer.phone);
+          editLawyerForm.setValue("email", lawyer.email);
+          editLawyerForm.setValue("dob", new Date(lawyer.dob)); // Convert the date if needed
+          editLawyerForm.setValue("designation", lawyer.designation);
+          editLawyerForm.setValue("bciRegistrationNo", lawyer.bciRegistrationNo);
+        })
+        .catch((error) => {
+          console.error("Failed to fetch lawyer data:", error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [lawyerId]);
+
   const onSubmitLawyer = async (data: ILawyer) => {
+    setIsLoading(true);
     try {
-      // Call the submit function to send the data
-      const newLawyer = await submitLawyerForm(data);
-      console.log("New Lawyer Created:", newLawyer);
-        router.push("/lawyers")
-      // Close the modal and reset the form on success
+      const updatedLawyer = await updateLawyerForm(lawyerId, data); // Pass the lawyerId
+      console.log("Lawyer Updated:", updatedLawyer);
+      router.push("/lawyers");
       onClose();
-      form.reset();
+      editLawyerForm.reset();
     } catch (error) {
       console.error("Failed to submit lawyer form:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
+
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmitLawyer)} className="space-y-4">
+    <Form {...editLawyerForm}>
+      <form onSubmit={editLawyerForm.handleSubmit(onSubmitLawyer)} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <FormField
-            control={form.control}
+            control={editLawyerForm.control}
             name="title"
             render={({ field }) => (
               <FormItem>
@@ -61,7 +99,7 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
           />
 
           <FormField
-            control={form.control}
+            control={editLawyerForm.control}
             name="name"
             render={({ field }) => (
               <FormItem>
@@ -75,7 +113,7 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
           />
 
           <FormField
-            control={form.control}
+            control={editLawyerForm.control}
             name="phone"
             render={({ field }) => (
               <FormItem>
@@ -89,7 +127,7 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
           />
 
           <FormField
-            control={form.control}
+            control={editLawyerForm.control}
             name="email"
             render={({ field }) => (
               <FormItem>
@@ -102,28 +140,31 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="dob"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>DOB:</FormLabel>
-                <FormControl>
-                  <Input
-                    type="date"
-                    {...field}
-                    value={field.value ? field.value.toISOString().split('T')[0] : ''}
-                    onChange={(e) => field.onChange(new Date(e.target.value))}
-                    className="px-2 text-slate-50"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+<FormField
+  control={editLawyerForm.control}
+  name="dob"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel>DOB:</FormLabel>
+      <FormControl>
+        <Input
+          type="date"
+          {...field}
+          value={field.value && !isNaN(new Date(field.value).getTime())
+            ? new Date(field.value).toISOString().split('T')[0]
+            : ''}
+          onChange={(e) => field.onChange(new Date(e.target.value))}
+          className="px-2 text-slate-50"
+        />
+      </FormControl>
+      <FormMessage />
+    </FormItem>
+  )}
+/>
+
 
           <FormField
-            control={form.control}
+            control={editLawyerForm.control}
             name="designation"
             render={({ field }) => (
               <FormItem>
@@ -148,7 +189,7 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
           />
 
           <FormField
-            control={form.control}
+            control={editLawyerForm.control}
             name="bciRegistrationNo"
             render={({ field }) => (
               <FormItem>
@@ -162,7 +203,10 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
           />
         </div>
 
-        <Button type="submit" className="mt-4">Submit</Button>
+        <Button type="submit" className="mt-4" disabled={isLoading}>
+          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          Update
+        </Button>
       </form>
     </Form>
   );
