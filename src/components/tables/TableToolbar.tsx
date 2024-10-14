@@ -9,7 +9,6 @@ import { TableFacetedFilter } from "./TableFacetedFilter";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner"; // Import toast from Sonner
 import { TableViewOptions } from './TableViewOptions';
-
 import { deleteByToolbar } from '@/actions/deleteByToolbar';
 import { CalendarDatePicker } from '../calendar-date-picker';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'; // Import Dialog components
@@ -19,21 +18,22 @@ interface DataTableToolbarProps<TData> {
   table: Table<TData>;
   filters: { name: string, value: string }[];
   linkToAdd: string;
-  refetch: Function;
-  exportToExcel: Function;
+  exportToExcel: (event: React.MouseEvent<HTMLButtonElement>) => void; // Specify the type
   setSearch: (search: string) => void;
   search: string;
   API: string;
   QueryKey: string;
   FormComponent?: React.ElementType; // Add FormComponent as a prop
+  isDateFilter: boolean;
 }
 
 export function DataTableToolbar<TData>({
+  isDateFilter,
   filter,
   API,
   table,
   filters,
-  refetch,
+
   setSearch,
   exportToExcel,
   search,
@@ -73,8 +73,24 @@ export function DataTableToolbar<TData>({
   };
 
   return (
-    <div className="flex flex-wrap items-center justify-between">
-      <div className="flex flex-1 flex-wrap items-center gap-2">
+    <div className="flex items-center justify-between gap-4 w-full">
+      {/* Left section - Add Team button */}
+      <div className="flex items-center gap-2">
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button variant="outline" className="hover:bg-transparent">
+              Add Team
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[600px] p-6">
+            {FormComponent && <FormComponent onClose={() => setIsDialogOpen(false)} />}
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      {/* Right section - Search, Date Picker, and Icon Buttons */}
+      <div className="flex items-center gap-2 w-full justify-end">
+        {/* Search Input */}
         <Input
           placeholder="Search here..."
           value={search ?? ""}
@@ -82,57 +98,44 @@ export function DataTableToolbar<TData>({
           className="h-8 w-[150px] lg:w-[250px]"
         />
 
-        {filters ? (
-          <TableFacetedFilter
-            column={table.getColumn(`${filter}`)}
-            title={`${filter}`}
-            options={filters}
+        {isDateFilter && (
+          // Date Picker
+          <CalendarDatePicker
+            date={dateRange}
+            onDateSelect={handleDateSelect}
+            className="h-9 w-[250px]"
+            variant="outline"
           />
-        ) : null}
-        {isFiltered && (
-          <Button
-            variant="ghost"
-            onClick={() => table.resetColumnFilters()}
-            className="h-8 px-2 lg:px-3"
-          >
-            Reset
-            <Cross2Icon className="ml-2 h-4 w-4" />
-          </Button>
         )}
-        <CalendarDatePicker
-          date={dateRange}
-          onDateSelect={handleDateSelect}
-          className="h-9 w-[250px]"
-          variant="outline"
-        />
-      </div>
-      <div className="flex items-center gap-2">
-        {table.getFilteredSelectedRowModel().rows.length > 0 ? (
-          <Tooltip.Provider>
-            <Tooltip.Root>
-              <Tooltip.Trigger asChild>
-                <Button variant="outline" size="sm" onClick={deleteMultiByToolbar}>
-                  <TrashIcon className="mr-2 size-4" aria-hidden="true" />
-                  ({table.getFilteredSelectedRowModel().rows.length})
-                </Button>
-              </Tooltip.Trigger>
-              <Tooltip.Content className="bg-gray-800 text-white p-2 rounded-md font-normal text-xs">
-                Delete Selected Rows
-              </Tooltip.Content>
-            </Tooltip.Root>
-          </Tooltip.Provider>
-        ) : null}
-
+        {/* Filter View Options */}
         <TableViewOptions table={table} />
 
-        <div className="flex justify-between items-center gap-2">
+        {/* Delete and Other Icons */}
+        <div className="flex items-center gap-2">
+          {table.getFilteredSelectedRowModel().rows.length > 0 && (
+            <Tooltip.Provider>
+              <Tooltip.Root>
+                <Tooltip.Trigger asChild>
+                  <Button variant="outline" size="sm" onClick={deleteMultiByToolbar}>
+                    <TrashIcon className="mr-2 size-4" aria-hidden="true" />
+                    ({table.getFilteredSelectedRowModel().rows.length})
+                  </Button>
+                </Tooltip.Trigger>
+                <Tooltip.Content className="bg-gray-800 text-white p-2 rounded-md font-normal text-xs">
+                  Delete Selected Rows
+                </Tooltip.Content>
+              </Tooltip.Root>
+            </Tooltip.Provider>
+          )}
+
+          {/* Export to Excel Button */}
           <Tooltip.Provider>
             <Tooltip.Root>
               <Tooltip.Trigger asChild>
                 <Button
                   variant="ghost"
                   className="hover:bg-transparent p-0"
-                  onClick={() => exportToExcel()}
+                  onClick={(event) => exportToExcel(event)} // Wrap in a callback function
                   aria-label="Export to Excel"
                 >
                   <FileDown className="w-4 h-4" />
@@ -142,34 +145,9 @@ export function DataTableToolbar<TData>({
                 Export to Excel
               </Tooltip.Content>
             </Tooltip.Root>
-
-            <Tooltip.Root>
-              <Tooltip.Trigger asChild>
-                <Button
-                  variant="ghost"
-                  className="hover:bg-transparent p-0"
-                  onClick={() => refetch()}
-                >
-                  <RefreshCcw className="w-4 h-4" />
-                </Button>
-              </Tooltip.Trigger>
-              <Tooltip.Content className="bg-gray-800 text-white p-2 rounded-md font-normal text-xs">
-                Refresh Table Data
-              </Tooltip.Content>
-            </Tooltip.Root>
           </Tooltip.Provider>
-        </div>
 
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button variant="ghost" className="hover:bg-transparent p-0">
-              <PlusCircle className="w-6 h-6 text-muted-foreground" />
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[600px] p-6">
-            {FormComponent && <FormComponent onClose={() => setIsDialogOpen(false)} />}
-          </DialogContent>
-        </Dialog>
+        </div>
       </div>
     </div>
   );

@@ -58,7 +58,7 @@ export const EditLawyerForm: React.FC<LawyerFormProps> = ({ onClose, lawyerId })
     try {
       const updatedLawyer = await updateLawyerForm(lawyerId, data); // Pass the lawyerId
       console.log("Lawyer Updated:", updatedLawyer);
-      router.push("/lawyers");
+      router.push("/teams");
       onClose();
       editLawyerForm.reset();
     } catch (error) {
@@ -81,11 +81,11 @@ export const EditLawyerForm: React.FC<LawyerFormProps> = ({ onClose, lawyerId })
                 <FormLabel>Title:</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger className="text-slate-50">
+                    <SelectTrigger className="">
                       <SelectValue placeholder="Select a title" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent className="text-slate-50">
+                  <SelectContent className="">
                     <SelectItem value="Adv.">Adv.</SelectItem>
                     <SelectItem value="Mr.">Mr.</SelectItem>
                     <SelectItem value="Mrs.">Mrs.</SelectItem>
@@ -105,7 +105,7 @@ export const EditLawyerForm: React.FC<LawyerFormProps> = ({ onClose, lawyerId })
               <FormItem>
                 <FormLabel>Name:</FormLabel>
                 <FormControl>
-                  <Input {...field} className="px-2 text-slate-50" />
+                  <Input {...field} className="px-2 " />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -119,7 +119,7 @@ export const EditLawyerForm: React.FC<LawyerFormProps> = ({ onClose, lawyerId })
               <FormItem>
                 <FormLabel>Phone:</FormLabel>
                 <FormControl>
-                  <Input {...field} className="px-2 text-slate-50" />
+                  <Input {...field} className="px-2 " />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -133,7 +133,7 @@ export const EditLawyerForm: React.FC<LawyerFormProps> = ({ onClose, lawyerId })
               <FormItem>
                 <FormLabel>Email:</FormLabel>
                 <FormControl>
-                  <Input {...field} type="email" className="px-2 text-slate-50" />
+                  <Input {...field} type="email" className="px-2 " />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -154,7 +154,7 @@ export const EditLawyerForm: React.FC<LawyerFormProps> = ({ onClose, lawyerId })
             ? new Date(field.value).toISOString().split('T')[0]
             : ''}
           onChange={(e) => field.onChange(new Date(e.target.value))}
-          className="px-2 text-slate-50"
+          className="px-2 "
         />
       </FormControl>
       <FormMessage />
@@ -171,11 +171,11 @@ export const EditLawyerForm: React.FC<LawyerFormProps> = ({ onClose, lawyerId })
                 <FormLabel>Designation:</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger className="text-slate-50">
+                    <SelectTrigger className="">
                       <SelectValue placeholder="Select a designation" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent className="text-slate-50">
+                  <SelectContent className="">
                     <SelectItem value="Junior Counsel" className="hover:rounded-md hover:border hover:border-white">Junior Counsel</SelectItem>
                     <SelectItem value="Senior Counsel" className="hover:rounded-md hover:border hover:border-white">Senior Counsel</SelectItem>
                     <SelectItem value="Para-Legal" className="hover:rounded-md hover:border hover:border-white">Para-Legal</SelectItem>
@@ -195,7 +195,7 @@ export const EditLawyerForm: React.FC<LawyerFormProps> = ({ onClose, lawyerId })
               <FormItem>
                 <FormLabel>BCI Registration No.:</FormLabel>
                 <FormControl>
-                  <Input {...field} className="px-2 text-slate-50" />
+                  <Input {...field} className="px-2 " />
                 </FormControl>
                 <FormMessage />
               </FormItem>

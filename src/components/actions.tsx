@@ -8,49 +8,61 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-
+import { Eye, Edit, Trash } from 'lucide-react';
+import { FaClone } from 'react-icons/fa';
 
  type ActionsPropType={
     editFunction: Function,
     deleteFunction: Function,
        copyFunction: Function,
+       viewFunction: Function
    }
 
 
-const Actions = ({editFunction, deleteFunction, copyFunction,  }:ActionsPropType) => {
+const Actions = ({editFunction, deleteFunction, copyFunction, viewFunction }:ActionsPropType) => {
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild >
-        <Button
-          aria-haspopup="true"
-          size="icon"
-          variant="ghost"
-          className='m-1 focus-visible:ring-0 '
-        >
-          <MoreHorizontal className="h-4 w-4" />
-          <span className="sr-only">Toggle menu</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem
-          onClick={()=>editFunction()}
-        >
-          Edit
-        </DropdownMenuItem>
-       <DropdownMenuItem
-          onClick={()=>deleteFunction()}
-        >
-          Delete
-        </DropdownMenuItem> 
+ <>
+ <div className="flex my-1 items-center justify-start"> {/* Container for the icon buttons */}
+      <Button
+        size="icon"
+        variant="ghost"
+        className=""
+        onClick={() => viewFunction()}
+        aria-label="View"
+      >
+        <Eye className="h-5 w-5 " />
+      </Button>
+      <Button
+        size="icon"
+        variant="ghost"
+        className=""
+        onClick={() => copyFunction()}
+        aria-label="View"
+      >
+        <FaClone className="h-5 w-5 text-green-400" />
+      </Button>
 
-        <DropdownMenuItem
-          onClick={()=>copyFunction()}
-        >
-          Copy Details
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+      <Button
+        size="icon"
+        variant="ghost"
+        className="text-blue-500 hover:text-blue-700"
+        onClick={() => editFunction()}
+        aria-label="Edit"
+      >
+        <Edit className="h-5 w-5" />
+      </Button>
+
+      <Button
+        size="icon"
+        variant="ghost"
+        className="text-red-500 hover:text-red-700"
+        onClick={() => deleteFunction()}
+        aria-label="Delete"
+      >
+        <Trash className="h-5 w-5" />
+      </Button>
+    </div>
+ </>
   )
 }
 

@@ -1,9 +1,9 @@
-
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
+import Actions from "@/components/actions";
 
 /** @type import(@tanstack/react-table).ColumnDef<any> */
-export const LawyerColumns = (expandedRows: any, setExpandedRows: any) => [
+export const LawyerColumns = (expandedRows: any, setExpandedRows: any,  handleView: Function, handleEdit: Function, handleDelete: Function, handleCopy: Function) => [
 
     // select
   {
@@ -41,92 +41,41 @@ export const LawyerColumns = (expandedRows: any, setExpandedRows: any) => [
     ),
     enableHiding: false,
 },
-//   name
-{
-    header: () => <span className="w-max">Name</span>,
-    accessorKey: "name", // Accessor for name
-    cell: ({ row }: { row: any }) => {
-      const title = row.original.title; // Access the title from the original row data
-      const name = row.getValue("name");
-      return (
-        <span className="min-w-[150px] w-fit whitespace-nowrap overflow-hidden text-ellipsis">
-          {title ? `${title} ${name}` : name || "N/A"}  {/* Concatenate title and name */}
-        </span>
-      );
-    },
-    enableHiding: false,
-},
 
-
-//   designation
+// PERSONAL DETAILS
   {
-    header: () => <span className="w-max">Designation</span>,
-    accessorKey: "designation",
-    cell: (info: any) => (
-      <span className="flex justify-start items-center w-fit min-w-max ">
+    header: () => <span className="w-max">personal Details</span>,
+    accessorKey: "personalDetails",
+    cell: ({ row }: { row: any }) => (
+      <div className="flex flex-col gap-2 my-1">
+        <span className="min-w-[120px]  whitespace-nowrap overflow-hidden text-ellipsis">
+          {row.original.title.toString()} {row.original.name?.toString() || "N/A"}
+        </span>
         <Badge
           className="w-max text-center py-1 px-2"
           variant="default"
         >
-          {info.getValue()}
+        <span className="min-w-[150px] w-fit whitespace-nowrap overflow-hidden text-ellipsis">
+          {row.original.designation?.toString() || "N/A"}
+        </span>
         </Badge>
-      </span>
-    ),
-    enableSorting:true
-  },
-  //   phone
-  {
-    header: () => <span className="w-max">Phone</span>,
-    accessorKey: "phone",
-    cell: (info: any) => (
-      <span className="min-w-[120px] w-fit whitespace-nowrap overflow-hidden text-ellipsis">
-        {info.getValue()?.toString() || "N/A"}
-      </span>
+      </div>
     ),
   },
-//   email
+  //   contact details
   {
-    header: () => <span className="w-max">Email</span>,
-    accessorKey: "email",
-    cell: (info: any) => (
-      <span className="min-w-[150px] w-fit whitespace-nowrap overflow-hidden text-ellipsis">
-        {info.getValue()?.toString() || "N/A"}
-      </span>
+    header: () => <span className="w-max">Contact Details</span>,
+    accessorKey: "contactDetails",
+    cell: ({ row }: { row: any }) => (
+      <div className="flex flex-col gap-2 my-1">
+        <span className="min-w-[120px] whitespace-nowrap overflow-hidden text-ellipsis">
+          {row.original.phone?.toString() || "N/A"}
+        </span>
+        <span className="min-w-[150px] w-fit whitespace-nowrap overflow-hidden text-ellipsis">
+          {row.original.email?.toString() || "N/A"}
+        </span>
+      </div>
     ),
-  },
-// // Alternate Mobile Column
-//   {
-//     header: () => <span className="w-max">Alternate Mobile</span>,
-//     accessorKey: "alternateMobile",
-//     cell: (info: any) => (
-//       <span className="min-w-[120px] w-fit whitespace-nowrap overflow-hidden text-ellipsis">
-//         {info.getValue() || "N/A"}
-//       </span>
-//     ),
-//   },
-  //   D.O.B
-  {
-    header: () => <span className="w-max">D.O.B</span>,
-    accessorKey: "dob",
-    cell: ({ row }: { row: any }) => {
-      const date = row.getValue("dob");
-      if (!date) return <span>N/A</span>;
-      const formattedDate = new Date(date).toLocaleDateString("en-US", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      });
-      return (
-        <div className="flex w-max min-w-[100px] items-center">
-          <span className="capitalize">🎂 {formattedDate}</span>
-        </div>
-      );
-    },
-    filterFn: (row: any, id: string, value: [Date, Date]) => {
-      const rowDate = new Date(row.getValue(id));
-      const [startDate, endDate] = value;
-      return rowDate >= startDate && rowDate <= endDate;
-    },
   },
 // bciRegistrationNo
 {
@@ -138,28 +87,19 @@ export const LawyerColumns = (expandedRows: any, setExpandedRows: any) => [
       </span>
     ),
   },
-  {
-    header: () => <span className="w-max">Created At</span>,
-    accessorKey: "_createdAt",
-    cell: ({ row }: { row: any }) => {
-      const date = row.getValue("_createdAt");
-      if (!date) return <span>N/A</span>;
-      const formattedDate = new Date(date).toLocaleDateString("en-US", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      });
-      return (
-        <div className="flex w-fit min-w-[100px] items-center">
-          <span className="capitalize"> {formattedDate}</span>
-        </div>
-      );
-    },
-    filterFn: (row: any, id: string, value: [Date, Date]) => {
-      const rowDate = new Date(row.getValue(id));
-      const [startDate, endDate] = value;
-      return rowDate >= startDate && rowDate <= endDate;
-    },
+   // actions column
+   {
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }: any) => (
+      <Actions
+        viewFunction={() => handleView(row.original)}
+        editFunction={() => handleEdit(row.original)}
+        deleteFunction={() => handleDelete(row.original)}
+        copyFunction={() => handleCopy(row.original)}
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
   },
-
 ]

@@ -26,6 +26,7 @@ import Actions from "../actions";
 import { AddLawyerForm } from "../forms/Lawyer/AddLawyerForm";
 
 interface DataTableProps<TData, TValue> {
+    isDateFilter: boolean,
     filter:string,
     API:string,
     deletePermission?: string,
@@ -55,6 +56,7 @@ interface DataTableProps<TData, TValue> {
 }
 
 export function DataTable<TData, TValue>({
+    isDateFilter,
     filter,
     API,
   columns,
@@ -157,21 +159,7 @@ export function DataTable<TData, TValue>({
     writeFile(workbook, 'report.xlsx');
   };
 
-  const handleCopy = (rowData: any) => {
-  try {
-    // Convert the row data to a JSON string
-    const jsonData = JSON.stringify(rowData, null, 2);
 
-    // Use the clipboard API to copy the JSON data
-    navigator.clipboard.writeText(jsonData);
-
-    // Show a success message
-    toast.success("Row data copied to clipboard!");
-  } catch (error) {
-    console.error("Failed to copy row data to clipboard:", error);
-    toast.error("Failed to copy data to clipboard.");
-  }
-};
 
   const handleCellClick = (e: React.MouseEvent, row: any, cell: any) => {
     const cellValue = cell.getValue();
@@ -188,12 +176,12 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-4 min-w-max ">
       <DataTableToolbar
+      isDateFilter={false}
        FormComponent={FormComponent}
       filter={filter}
         table={table}
         filters={filters!}
         linkToAdd={linkToAdd}
-        refetch={refetch}
         exportToExcel={exportToExcel}
               setSearch={setSearch}
               search={search}
@@ -234,7 +222,6 @@ export function DataTable<TData, TValue>({
             )}
           </TableHead>
         ))}
-        <TableHead className="w-[100px]"></TableHead>
       </TableRow>
     ))}
   </TableHeader>
@@ -255,11 +242,6 @@ export function DataTable<TData, TValue>({
               </TableCell>
             ))}
             <TableCell className="p-0">
-              <Actions
-                deleteFunction={() => handleDelete(row?.original._id)}
-                editFunction={() => handleEdit(row?.original._id)}
-                copyFunction={() => handleCopy(row?.original)}
-              />
             </TableCell>
           </TableRow>
         </React.Fragment>

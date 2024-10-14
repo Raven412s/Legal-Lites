@@ -1,14 +1,14 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { formatDate, DateSelectArg, EventApi } from "@fullcalendar/core";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { FaEdit, FaTrash } from "react-icons/fa";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DateSelectArg, formatDate } from "@fullcalendar/core";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import FullCalendar from "@fullcalendar/react";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import React, { useEffect, useState } from "react";
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 interface EventData {
   id: string;
@@ -35,9 +35,12 @@ const Calendar: React.FC = () => {
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
   const [eventDescription, setEventDescription] = useState<string>("");
 
-  // Define color options for event background and text
-  const backgroundColorOptions = ["#ff5733", "#33ff57", "#3375ff", "#ff33d4", "#f3f3f3"];
-  const textColorOptions = ["#000000", "#ffffff", "#ff5733", "#3375ff", "#33ff57"];
+  const handleEditorChange = (content: string) => {
+    setEventDescription(content); // Set the rich text content
+  };
+
+  const backgroundColorOptions = ["#6293ff", "#dc2626", "#2ca874", "#dbe0e5", "#e58a00", "#c8d9ff", "#f5bebe", "#c0e5d9", "#f8f9fa", "#f7dcb3",];
+  const textColorOptions = ["#131920", "#f5bebe", "#c035d9", "#f8f9fa", "#f7dcb3", "#c8d9ff", "#6293ff", "#dc2626", "#2ca87f", "#dbe0e5", "#e58a00" ];
 
   // Load events from localStorage on component mount
   useEffect(() => {
@@ -122,7 +125,7 @@ const Calendar: React.FC = () => {
 
   return (
     <div>
-      <div className="flex w-full px-10 justify-between items-start gap-8">
+      <div className="flex w-full px-10 pb-5 justify-between items-start gap-8">
         <div className="w-3/12">
           <div className="py-10 text-2xl font-extrabold px-7">Calendar Events</div>
           <ul className="space-y-6">
@@ -139,11 +142,16 @@ const Calendar: React.FC = () => {
                   <div className="flex flex-col gap-5 items-start">
                     <div>
                       <h3 className="text-lg font-semibold mb-1">{event.title}</h3>
+                      {/* Render the rich text description */}
                       {event.description && (
-                        <p className="text-sm text-muted-foreground mb-2">{event.description}</p>
+                        <div
+                          className="text-sm text-muted-foreground mb-2"
+                            >
+                            {event.description}
+                        </div>
                       )}
                       <Badge>
-                        <label className="text-xs ">
+                        <label className="text-xs">
                           {formatDate(new Date(event.start), {
                             year: "numeric",
                             month: "short",
@@ -153,7 +161,14 @@ const Calendar: React.FC = () => {
                             hour12: true,
                           })}
                           {event.end && event.start !== event.end && (
-                            <>{formatDate(new Date(event.end), { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: true })}</>
+                            <>{` - ${formatDate(new Date(event.end), {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: true,
+                            })}`}</>
                           )}
                         </label>
                       </Badge>
@@ -203,13 +218,13 @@ const Calendar: React.FC = () => {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
+        <DialogContent className="min-w-[60vw] overflow-scroll h-[90%]">
           <DialogHeader>
             <DialogTitle>{selectedEvent ? "Edit" : "Add"} Event Details</DialogTitle>
           </DialogHeader>
-          <form className="space-y-6 p-6 rounded-lg shadow-lg w-full max-w-md mx-auto" onSubmit={handleAddEvent}>
+          <form className="space-y-6 p-6 rounded-lg card-shadow w-full mx-auto" onSubmit={handleAddEvent}>
             <div className="flex flex-col">
-              <label htmlFor="eventTitle" className="mb-1 text-sm ">Title</label>
+              <label htmlFor="eventTitle" className="mb-1 text-sm">Title</label>
               <input
                 id="eventTitle"
                 type="text"
@@ -217,83 +232,88 @@ const Calendar: React.FC = () => {
                 value={newEventTitle}
                 onChange={(e) => setNewEventTitle(e.target.value)}
                 required
-                className="border border-gray-300 p-2 rounded-md "
+                className="border border-gray-300 p-2 rounded-md"
               />
             </div>
 
             <div className="flex flex-col">
-              <label htmlFor="eventDescription" className="mb-1 text-sm ">Description</label>
-              <textarea
-                id="eventDescription"
-                value={eventDescription}
-                onChange={(e) => setEventDescription(e.target.value)}
-                className="border border-gray-300 p-2 rounded-md "
-              />
-            </div>
-
-            <div className="flex flex-col">
-              <label htmlFor="eventStart" className="mb-1 text-sm ">Start Date & Time</label>
+              <label htmlFor="eventStart" className="mb-1 text-sm">Start Date</label>
               <input
                 id="eventStart"
                 type="datetime-local"
                 value={eventStart}
                 onChange={(e) => setEventStart(e.target.value)}
-                className="border border-gray-300 p-2 rounded-md "
+                required
+                className="border border-gray-300 p-2 rounded-md"
               />
             </div>
 
             <div className="flex flex-col">
-              <label htmlFor="eventEnd" className="mb-1 text-sm ">End Date & Time</label>
+              <label htmlFor="eventEnd" className="mb-1 text-sm">End Date</label>
               <input
                 id="eventEnd"
                 type="datetime-local"
                 value={eventEnd}
                 onChange={(e) => setEventEnd(e.target.value)}
-                className="border border-gray-300 p-2 rounded-md "
+                className="border border-gray-300 p-2 rounded-md"
               />
+            </div>
+
+            <div className="flex flex-col">
+              <label htmlFor="eventDescription" className="mb-1 text-sm">Description</label>
+            <textarea name="eventDescription" id="eventDescription" rows={5} placeholder="describe your event" className="border border-gray-300 p-2 rounded-md" value={eventDescription}
+                onChange={(e) => setEventDescription(e.target.value)}
+                required></textarea>
+
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col">
+                <label htmlFor="eventColor" className="mb-1 text-sm">Background Color</label>
+                <div className="flex gap-2">
+                  {backgroundColorOptions.map((color) => (
+                    <div
+                      key={color}
+                      style={{ backgroundColor: color }}
+                      className={`w-8 h-8 rounded cursor-pointer border-2 ${
+                        color === eventColor ? "ring-2 ring-offset-2 ring-blue-500" : ""
+                      }`}
+                      onClick={() => setEventColor(color)}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col">
+                <label htmlFor="eventTextColor" className="mb-1 text-sm">Text Color</label>
+                <div className="flex gap-2">
+                  {textColorOptions.map((color) => (
+                    <div
+                      key={color}
+                      style={{ backgroundColor: color }}
+                      className={`w-8 h-8 rounded cursor-pointer border-2 ${
+                        color === eventTextColor ? "ring-2 ring-offset-2 ring-blue-500" : ""
+                      }`}
+                      onClick={() => setEventTextColor(color)}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
 
             <div className="flex items-center">
               <input
+                id="isAllDay"
                 type="checkbox"
                 checked={isAllDay}
                 onChange={() => setIsAllDay(!isAllDay)}
                 className="mr-2"
               />
-              <label className="text-sm">All Day Event</label>
+              <label htmlFor="isAllDay" className="text-sm">All Day Event</label>
             </div>
 
-            <div className="flex flex-col">
-  <label className="mb-1 text-sm">Event Color</label>
-  <div className="flex gap-2">
-    {backgroundColorOptions.map((color) => (
-      <div
-        key={color}
-        className={`w-8 h-8 rounded cursor-pointer border-2 `}
-        style={{ backgroundColor: color }}
-        onClick={() => setEventColor(color)}
-      />
-    ))}
-  </div>
-</div>
-
-<div className="flex flex-col mt-4">
-  <label className="mb-1 text-sm">Event Text Color</label>
-  <div className="flex gap-2">
-    {textColorOptions.map((color) => (
-      <div
-        key={color}
-        className={`w-8 h-8 rounded  cursor-pointer border-2 `}
-        style={{ backgroundColor: color }}
-        onClick={() => setEventTextColor(color)}
-      />
-    ))}
-  </div>
-</div>
-
-
             <Button type="submit" className="w-full">
-              {selectedEvent ? "Update" : "Add"} Event
+              {selectedEvent ? "Update Event" : "Add Event"}
             </Button>
           </form>
         </DialogContent>
