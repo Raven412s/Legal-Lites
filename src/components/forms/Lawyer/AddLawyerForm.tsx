@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { lawyerSchema,  } from "@/zod-schemas/zLawyer";
+import { lawyerSchema } from "@/zod-schemas/zLawyer";
 import { ILawyer } from "@/interfaces/interface";
 import { LawyerFormProps } from "@/interfaces/interface";
 import { submitLawyerForm } from "@/functions/lawyer";
@@ -13,8 +13,8 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 
 export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
- const router = useRouter()
- const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const addLawyerForm = useForm<ILawyer>({
     resolver: zodResolver(lawyerSchema),
@@ -29,13 +29,19 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
       // Close the modal and reset the form on success
       onClose();
       addLawyerForm.reset();
-      router.push("/lawyers")
+      router.push("/teams");
     } catch (error) {
       console.error("Failed to submit lawyer form:", error);
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Watch for changes in the designation field
+  const designation = addLawyerForm.watch("designation");
+
+  const isRegistrationDisabled =
+    designation === "Para-Legal" || designation === "Office Executive" || designation === "Other";
 
   return (
     <Form {...addLawyerForm}>
@@ -49,11 +55,11 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
                 <FormLabel>Title:</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger className="">
+                    <SelectTrigger>
                       <SelectValue placeholder="Select a title" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent className="">
+                  <SelectContent>
                     <SelectItem value="Adv.">Adv.</SelectItem>
                     <SelectItem value="Mr.">Mr.</SelectItem>
                     <SelectItem value="Mrs.">Mrs.</SelectItem>
@@ -73,7 +79,7 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
               <FormItem>
                 <FormLabel>Name:</FormLabel>
                 <FormControl>
-                  <Input {...field} className="px-2 " />
+                  <Input {...field} className="px-2" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -87,7 +93,7 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
               <FormItem>
                 <FormLabel>Phone:</FormLabel>
                 <FormControl>
-                  <Input {...field} className="px-2 " />
+                  <Input {...field} className="px-2" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -101,7 +107,7 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
               <FormItem>
                 <FormLabel>Email:</FormLabel>
                 <FormControl>
-                  <Input {...field} type="email" className="px-2 " />
+                  <Input {...field} type="email" className="px-2" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -120,7 +126,7 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
                     {...field}
                     value={field.value ? field.value.toISOString().split('T')[0] : ''}
                     onChange={(e) => field.onChange(new Date(e.target.value))}
-                    className="px-2 "
+                    className="px-2"
                   />
                 </FormControl>
                 <FormMessage />
@@ -136,16 +142,16 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
                 <FormLabel>Designation:</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger className="">
+                    <SelectTrigger>
                       <SelectValue placeholder="Select a designation" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent className="">
-                    <SelectItem value="Junior Counsel" className="hover:rounded-md hover:border hover:border-white">Junior Counsel</SelectItem>
-                    <SelectItem value="Senior Counsel" className="hover:rounded-md hover:border hover:border-white">Senior Counsel</SelectItem>
-                    <SelectItem value="Para-Legal" className="hover:rounded-md hover:border hover:border-white">Para-Legal</SelectItem>
-                    <SelectItem value="Office Executive" className="hover:rounded-md hover:border hover:border-white">Office Executive</SelectItem>
-                    <SelectItem value="Other" className="hover:rounded-md hover:border hover:border-white">Other</SelectItem>
+                  <SelectContent>
+                    <SelectItem value="Junior Counsel">Junior Counsel</SelectItem>
+                    <SelectItem value="Senior Counsel">Senior Counsel</SelectItem>
+                    <SelectItem value="Para-Legal">Para-Legal</SelectItem>
+                    <SelectItem value="Office Executive">Office Executive</SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -160,7 +166,7 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
               <FormItem>
                 <FormLabel>BCI Registration No.:</FormLabel>
                 <FormControl>
-                  <Input {...field} className="px-2 " />
+                  <Input {...field} className="px-2" disabled={isRegistrationDisabled} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

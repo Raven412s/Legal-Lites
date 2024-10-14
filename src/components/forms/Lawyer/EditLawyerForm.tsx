@@ -1,4 +1,4 @@
-import { getLawyerById, } from "@/actions/getLawyerByID";
+import { getLawyerById } from "@/actions/getLawyerByID";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -68,6 +68,11 @@ export const EditLawyerForm: React.FC<LawyerFormProps> = ({ onClose, lawyerId })
     }
   };
 
+  // Function to determine if the BCI Registration No. input should be disabled
+  const isBciRegistrationDisabled = () => {
+    const designation = editLawyerForm.watch("designation");
+    return designation === "Para-Legal" || designation === "Office Executive" || designation === "Other";
+  };
 
   return (
     <Form {...editLawyerForm}>
@@ -140,28 +145,27 @@ export const EditLawyerForm: React.FC<LawyerFormProps> = ({ onClose, lawyerId })
             )}
           />
 
-<FormField
-  control={editLawyerForm.control}
-  name="dob"
-  render={({ field }) => (
-    <FormItem>
-      <FormLabel>DOB:</FormLabel>
-      <FormControl>
-        <Input
-          type="date"
-          {...field}
-          value={field.value && !isNaN(new Date(field.value).getTime())
-            ? new Date(field.value).toISOString().split('T')[0]
-            : ''}
-          onChange={(e) => field.onChange(new Date(e.target.value))}
-          className="px-2 "
-        />
-      </FormControl>
-      <FormMessage />
-    </FormItem>
-  )}
-/>
-
+          <FormField
+            control={editLawyerForm.control}
+            name="dob"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>DOB:</FormLabel>
+                <FormControl>
+                  <Input
+                    type="date"
+                    {...field}
+                    value={field.value && !isNaN(new Date(field.value).getTime())
+                      ? new Date(field.value).toISOString().split('T')[0]
+                      : ''}
+                    onChange={(e) => field.onChange(new Date(e.target.value))}
+                    className="px-2 "
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <FormField
             control={editLawyerForm.control}
@@ -195,7 +199,7 @@ export const EditLawyerForm: React.FC<LawyerFormProps> = ({ onClose, lawyerId })
               <FormItem>
                 <FormLabel>BCI Registration No.:</FormLabel>
                 <FormControl>
-                  <Input {...field} className="px-2 " />
+                  <Input {...field} className="px-2 " disabled={isBciRegistrationDisabled()} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
