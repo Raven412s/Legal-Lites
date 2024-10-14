@@ -26,14 +26,21 @@ export const LawyerDetailsModal: React.FC<LawyerDetailsModalProps> = ({ isOpen, 
           <DialogTitle>Lawyer Details</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
-          <div><strong>Title:</strong> {lawyer.title}</div>
-          <div><strong>Name:</strong> {lawyer.name}</div>
-          <div><strong>Email:</strong> {lawyer.email}</div>
-          <div><strong>Phone:</strong> {lawyer.phone}</div>
-          <div><strong>Date of Birth:</strong> {formatDate(lawyer.dob)}</div>
-          <div><strong>Designation:</strong> {lawyer.designation}</div>
-          <div><strong>BCI Registration No:</strong> {lawyer.bciRegistrationNo}</div>
-          <div><strong>Verified:</strong> {lawyer.verified ? 'Yes' : 'No'}</div>
+          <div className="flex flex-1 gap-4 w-full ">
+          <div className='flex flex-1 flex-col gap-2  '><strong>Name:</strong> <div className="card-shadow glassmorphism">{lawyer.title} {lawyer.name}</div></div>
+          </div>
+          <div className="flex flex-1 gap-4 w-full ">
+          <div className='flex flex-1 flex-col gap-2  '><strong>Email:</strong><div className="card-shadow glassmorphism"> {lawyer.email}</div></div>
+          <div className='flex flex-1 flex-col gap-2  '><strong>Phone:</strong><div className="card-shadow glassmorphism"> {lawyer.phone}</div></div>
+          </div>
+          <div className="flex flex-1 gap-4 w-full ">
+          <div className='flex flex-1 flex-col gap-2  '><strong>Date of Birth:</strong><div className="card-shadow glassmorphism"> {formatDate(lawyer.dob)}</div></div>
+          <div className='flex flex-1 flex-col gap-2  '><strong>Designation:</strong><div className="card-shadow glassmorphism"> {lawyer.designation}</div></div>
+          </div>
+          <div className="flex flex-1 gap-4 w-full ">
+          <div className='flex flex-1 flex-col gap-2  '><strong>BCI Registration No:</strong><div className="card-shadow glassmorphism"> {lawyer.bciRegistrationNo ? lawyer.bciRegistrationNo: "NA"}</div></div>
+          <div className='flex flex-1 flex-col gap-2  '><strong>Verified:</strong><div className="card-shadow glassmorphism"> {lawyer.verified ? 'Yes' : 'No'}</div></div>
+          </div>
           {/* Add more fields as necessary */}
         </div>
       </DialogContent>
