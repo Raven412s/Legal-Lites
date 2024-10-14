@@ -1,6 +1,6 @@
 // menuItems.ts
 import { MenuItem } from '@/interfaces/interface';
-import { FaHome, FaTasks, FaUser, FaUsers } from 'react-icons/fa';
+import { FaCalendar, FaHome, FaTasks, FaUser, FaUsers } from 'react-icons/fa';
 
 const menuItems: MenuItem[] = [
   { label: 'Home', icon: FaHome, link: '/home' },
@@ -20,6 +20,7 @@ const menuItems: MenuItem[] = [
       { label: 'Create Lawyer', icon: FaTasks, link: '/lawyers/add' },
     ],
   },
+  { label: 'Day-Planner', icon: FaCalendar, link: '/day-planner' },
 ];
 
 export default menuItems;

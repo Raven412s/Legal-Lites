@@ -272,3 +272,17 @@
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
   }
+
+/* Default light theme shadow */
+.card-shadow {
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  }
+
+  /* Dark theme shadow */
+  .dark .card-shadow {
+    box-shadow: rgba(255, 255, 255, 0.5) 0px 3px 8px; /* Use lighter shadow */
+  }
+
+  .glassmorphism {
+    @apply rounded-xl border border-gray-200 bg-white/20 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.2)] backdrop-blur p-5;
+  }

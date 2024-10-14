@@ -40,7 +40,7 @@ export async function GET() {
       await connectToDatabase();
 
       // Fetch the list of Teams from the database
-      const Teams = await Team.find();  // You can also apply filters or pagination here if necessary
+      const Teams = await Team.find().populate("teamMembers");  // You can also apply filters or pagination here if necessary
       const TeamCount = Teams.length;
 
       // Return the list of Teams and count as JSON

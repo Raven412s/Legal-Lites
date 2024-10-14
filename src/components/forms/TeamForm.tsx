@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { fetchLawyers, updateLawyerOptions } from "@/functions/lawyer";
@@ -9,11 +10,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
 import Select, { GroupBase, MultiValue } from 'react-select';
+import { AddLawyerForm } from "./Lawyer/AddLawyerForm";
+
 
 type OptionType = {
     value: string;
     label: string;
-    lawyer: ILawyer; // Added full lawyer object here
+    lawyer: ILawyer;
 };
 
 export const AddTeamForm = () => {
@@ -24,14 +27,13 @@ export const AddTeamForm = () => {
         resolver: zodResolver(teamSchema),
         defaultValues: {
             teamName: '',
-            teamMembers: [], // Array of lawyer references or objects
+            teamMembers: [],
         },
     });
 
-    const { register, setValue, watch, handleSubmit } = form;
+    const { setValue, handleSubmit } = form;
 
     useEffect(() => {
-        // Fetch lawyers and update options when the component mounts
         const loadLawyers = async () => {
             const lawyers = await fetchLawyers();
             const options = updateLawyerOptions(lawyers?.lawyers);
@@ -41,9 +43,9 @@ export const AddTeamForm = () => {
     }, []);
 
     const handleLawyerChange = (selectedOptions: MultiValue<OptionType>) => {
-        const selectedLawyersData = selectedOptions.map((option) => option.lawyer);  // Store the full lawyer object
-        setSelectedLawyers(selectedOptions);  // For displaying selected options
-        setValue('teamMembers', selectedLawyersData);  // Update form field with lawyer references
+        const selectedLawyersData = selectedOptions.map((option) => option.lawyer);
+        setSelectedLawyers(selectedOptions);
+        setValue('teamMembers', selectedLawyersData);
     };
 
     return (
@@ -65,17 +67,6 @@ export const AddTeamForm = () => {
 
                 <FormItem>
                     <FormLabel>Team Members:</FormLabel>
-                    {/* <div className="mb-4">
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <Button type="button" className="bg-zinc-900">Register Lawyer</Button>
-                            </DialogTrigger>
-                            <DialogContent className="card w-[90%] bg-muted-foreground border-primary-foreground border-dashed border-2 backdrop-blur-sm" style={{ boxShadow: 'rgba(128, 128, 128, 0.84) 0px 3px 8px' }}>
-                                <AddLawyerForm onClose={() => {}} />
-                            </DialogContent>
-                        </Dialog>
-                    </div> */}
-
                     <Select
                         isMulti
                         options={lawyerOptions}
@@ -120,7 +111,19 @@ export const AddTeamForm = () => {
                     />
                 </FormItem>
 
-                <Button type="submit">Submit</Button>
+                <div className="flex space-x-4">
+                    <Button type="submit">Submit</Button>
+
+                    {/* New Button to open dialog for adding lawyer */}
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button variant="ghost">Register Lawyer</Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-xl">
+                            <AddLawyerForm onClose={() => {}} lawyerId="" />
+                        </DialogContent>
+                    </Dialog>
+                </div>
             </form>
         </Form>
     );

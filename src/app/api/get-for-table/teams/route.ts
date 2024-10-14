@@ -35,7 +35,7 @@ export async function GET(request: Request) {
       }
 
       // Execute the query with pagination
-      const teams = await Team.find(query).skip(skip).limit(limit);
+      const teams = await Team.find(query).skip(skip).limit(limit).populate("teamMembers");
       const total = await Team.countDocuments(query); // Total count for pagination
 
       // Return Teams, total count, and pagination info

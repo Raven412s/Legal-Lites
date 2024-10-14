@@ -67,7 +67,7 @@ console.log("Teams",data)
       <h1 className="text-lg font-semibold md:text-2xl">Teams</h1>
     </div>
       <div className="flex items-center justify-center rounded-lg  ">
-      {!isLoading ? (
+      {!isLoading && data ? (
               <DataTable
               FormComponent={AddTeamForm}
               QueryKey='Teams'

@@ -26,10 +26,10 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
       // Call the submit function to send the data
       const newLawyer = await submitLawyerForm(data);
       console.log("New Lawyer Created:", newLawyer);
-      router.push("/lawyers")
       // Close the modal and reset the form on success
       onClose();
       addLawyerForm.reset();
+      router.push("/lawyers")
     } catch (error) {
       console.error("Failed to submit lawyer form:", error);
     } finally {

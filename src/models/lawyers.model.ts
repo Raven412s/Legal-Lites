@@ -33,14 +33,13 @@ const LawyerSchema = new Schema({
     type: String,
     required: function (this: any) {
       return this.designation === "Junior Counsel" || this.designation === "Senior Counsel";
-    },
-    default: "NA"
+    }
   },
   verified: {
     type: Boolean,
     default: false
   },
-  _createdAt: {
+  createdAt: {
     type: Date,
     default: Date.now
   }

@@ -1,10 +1,8 @@
-
 import { Checkbox } from "@/components/ui/checkbox";
 
 /** @type import(@tanstack/react-table).ColumnDef<any> */
 export const TeamColumns = (expandedRows: any, setExpandedRows: any) => [
-
-    // select
+  // select
   {
     id: "select",
     header: ({ table }: any) => (
@@ -28,19 +26,19 @@ export const TeamColumns = (expandedRows: any, setExpandedRows: any) => [
     ),
     enableSorting: false,
     enableHiding: false,
-    },
-    //  sr. no.
-{
-    id:"serial-number",
+  },
+  // Sr. No.
+  {
+    id: "serial-number",
     header: () => <span className="w-max">Sr.</span>,
     cell: (info: any) => (
       <span className="min-w-[150px] w-fit whitespace-nowrap overflow-hidden text-ellipsis">
-        {Number(info.row.id)+1}
+        {Number(info.row.id) + 1}
       </span>
     ),
     enableHiding: false,
-},
-//   name
+  },
+  // Team Name
   {
     header: () => <span className="w-max">Team Name</span>,
     accessorKey: "teamName",
@@ -51,28 +49,50 @@ export const TeamColumns = (expandedRows: any, setExpandedRows: any) => [
     ),
     enableHiding: false,
   },
+  // Team Members (Name, Email, Designation, etc.)
   {
-    header: () => <span className="w-max">Created At</span>,
-    accessorKey: "createdAt",
+    header: () => <span className="w-max">Team Members</span>,
+    accessorKey: "teamMembers",
     cell: ({ row }: { row: any }) => {
-      const date = row.getValue("createdAt");
-      if (!date) return <span>N/A</span>;
-      const formattedDate = new Date(date).toLocaleDateString("en-US", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      });
+      const teamMembers = row.getValue("teamMembers") || [];
+      if (!teamMembers.length) return <span>N/A</span>;
+
       return (
-        <div className="flex w-fit min-w-[100px] items-center">
-          <span className="capitalize"> {formattedDate}</span>
+        <div className="min-w-[200px] flex  w-fit ">
+          {teamMembers.map((member: any, index: number) => (
+            <div key={index} className=" w-max py-2 ">
+              <div className="border-l border-r px-2" >
+                 {member.name+" - " + `(${member.bciRegistrationNo})` || "N/A"}
+              </div>
+            </div>
+          ))}
         </div>
       );
     },
-    filterFn: (row: any, id: string, value: [Date, Date]) => {
-      const rowDate = new Date(row.getValue(id));
-      const [startDate, endDate] = value;
-      return rowDate >= startDate && rowDate <= endDate;
-    },
+    enableHiding: false,
   },
-
-]
+    // Created At
+    {
+        header: () => <span className="w-max">Created At</span>,
+        accessorKey: "createdAt",
+        cell: ({ row }: { row: any }) => {
+          const date = row.getValue("createdAt");
+          if (!date) return <span>N/A</span>;
+          const formattedDate = new Date(date).toLocaleDateString("en-US", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          });
+          return (
+            <div className="flex w-fit min-w-[100px] items-center">
+              <span className="capitalize"> {formattedDate}</span>
+            </div>
+          );
+        },
+        filterFn: (row: any, id: string, value: [Date, Date]) => {
+          const rowDate = new Date(row.getValue(id));
+          const [startDate, endDate] = value;
+          return rowDate >= startDate && rowDate <= endDate;
+        },
+      }
+];
