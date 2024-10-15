@@ -18,15 +18,6 @@ export const EditLawyerForm: React.FC<LawyerFormProps> = ({ onClose, lawyerId })
 
   const editLawyerForm = useForm<ILawyer>({
     resolver: zodResolver(lawyerSchema),
-    defaultValues: {
-      title: "Mr.",
-      name: "",
-      phone: "",
-      email: "",
-      dob: undefined,
-      designation: "Senior Counsel",
-      bciRegistrationNo: ""
-    }
   });
 
   // Load the lawyer data when the component mounts
@@ -84,7 +75,7 @@ export const EditLawyerForm: React.FC<LawyerFormProps> = ({ onClose, lawyerId })
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Title:</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value || ''}>
                   <FormControl>
                     <SelectTrigger className="">
                       <SelectValue placeholder="Select a title" />
@@ -173,7 +164,7 @@ export const EditLawyerForm: React.FC<LawyerFormProps> = ({ onClose, lawyerId })
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Designation:</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value || ''}>
                   <FormControl>
                     <SelectTrigger className="">
                       <SelectValue placeholder="Select a designation" />

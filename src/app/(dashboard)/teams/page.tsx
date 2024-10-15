@@ -16,6 +16,7 @@ import { AddLawyerForm } from '@/components/forms/Lawyer/AddLawyerForm'
 import { EditLawyerForm } from '@/components/forms/Lawyer/EditLawyerForm' // Import the Edit Lawyer form
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"; // For modal
 import { LawyerDetailsModal } from '@/components/modals/LawyerDetailsModal'
+import { ConfirmDeleteModal } from '@/components/modals/ConfirmDeleteModal'
 
 interface LawyersResponse {
   lawyers: ILawyer[];
@@ -27,6 +28,8 @@ const ViewLawyerPage = () => {
   const [selectedLawyer, setSelectedLawyer] = useState<ILawyer | null>(null); // State to hold the selected lawyer for editing
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
   const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State to manage modal visibility
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for delete modal
+  const [lawyerToDelete, setLawyerToDelete] = useState<ILawyer | null>(null); // Track the lawyer to delete
 
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -61,14 +64,10 @@ const ViewLawyerPage = () => {
     setIsEditModalOpen(true); // Open the modal
   };
 
-  // Delete user handler
-  const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this user?")) {
-      deleteUserMutation.mutate(id);
-    } else {
-      toast.error("You do not have permissions for deleting a user.");
-      return null;
-    }
+ // Handler to open the delete modal
+ const handleDelete = (lawyer: ILawyer) => {
+    setLawyerToDelete(lawyer); // Set the selected lawyer to delete
+    setIsDeleteModalOpen(true); // Open the delete confirmation modal
   };
 
   const handleCopy = (rowData: any) => {
@@ -83,6 +82,7 @@ const ViewLawyerPage = () => {
   };
 
   const handleView = (lawyer: ILawyer) => {
+    console.log(lawyer)
     setSelectedLawyer(lawyer); // Set the selected lawyer
     setIsModalOpen(true);      // Open the modal
 };
@@ -93,72 +93,109 @@ const ViewLawyerPage = () => {
     setSelectedLawyer(null);   // Reset the selected lawyer
 };
 
+  // Confirm deletion action
+  const confirmDelete = () => {
+    if (lawyerToDelete) {
+      deleteUserMutation.mutate(lawyerToDelete._id);
+      setIsDeleteModalOpen(false); // Close the modal after deletion
+    }
+  };
+
   const columns = LawyerColumns(expandedRows, setExpandedRows, handleView, handleEdit, handleDelete, handleCopy);
   const totalPages = data ? Math.ceil(data.total / rowPerPage) : 1;
 
   return (
-    <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 h-max">
-      <div className="flex justify-between items-center">
-        <h1 className="text-lg font-semibold md:text-2xl">Team</h1>
-      </div>
-      <div className="flex items-center justify-center rounded-lg">
-        {!isLoading ? (
-          <DataTable
-            isDateFilter={false}
-            FormComponent={AddLawyerForm}
-            QueryKey="lawyers"
-            API="/api/lawyers"
-            filter="lawyer"
-            data={data?.lawyers!}
-            totalData={data?.total!}
-            columns={columns}
-            linkToAdd="/lawyers"
-            refetch={refetch}
-            handleEdit={handleEdit}
-            handleDelete={handleDelete}
-            totalPages={totalPages}
-            currentPage={page}
-            setPage={setPage}
-            dataLoading={isLoading}
-            setSearch={setSearch}
-            search={search}
-            rowPerPage={rowPerPage}
-            setRowPerPage={setRowPerPage}
-            total={data?.total!}
-          />
-        ) : (
-          <div className="flex flex-col items-center justify-center h-[80vh] gap-1 text-center">
-            <Image src={noData} alt="no-Lawyers" width={500} height={500} className="m-6 rounded-lg" />
-            <h3 className="text-2xl font-bold tracking-tight">You have no Users</h3>
-            <p className="text-sm text-muted-foreground">
-              You can view all Users here as soon as you add one.
-            </p>
-            <Link href="/users/add" className="mt-4">
-              <Button>Add User</Button>
-            </Link>
-          </div>
-        )}
-      </div>
+<main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 h-max">
+  {/* Header Section */}
+  <div className="flex justify-between items-center">
+    <h1 className="text-xl font-semibold md:text-2xl">Team</h1>
+  </div>
 
-            {/* Render the Lawyer Details Modal */}
-            <LawyerDetailsModal
-                isOpen={isModalOpen}
-                onClose={handleCloseModal}
-                lawyer={selectedLawyer}
-            />
+  {/* Data Table Section */}
+  <div className="flex items-center justify-center w-full">
+    {!isLoading ? (
+      <DataTable
+        isDateFilter={false}
+        FormComponent={AddLawyerForm}
+        QueryKey="lawyers"
+        API="/api/lawyers"
+        filter="lawyer"
+        data={data?.lawyers!}
+        totalData={data?.total!}
+        columns={columns}
+        linkToAdd="/lawyers"
+        refetch={refetch}
+        handleEdit={handleEdit}
+        handleDelete={handleDelete}
+        totalPages={totalPages}
+        currentPage={page}
+        setPage={setPage}
+        dataLoading={isLoading}
+        setSearch={setSearch}
+        search={search}
+        rowPerPage={rowPerPage}
+        setRowPerPage={setRowPerPage}
+        total={data?.total!}
+      />
+    ) : (
+      <div className="flex flex-col items-center justify-center h-[80vh] gap-1 text-center">
+        <Image
+          src={noData}
+          alt="no-Lawyers"
+          width={500}
+          height={500}
+          className="m-6 rounded-lg"
+        />
+        <h3 className="text-xl font-bold tracking-tight md:text-2xl">
+          You have no Users
+        </h3>
+        <p className="text-sm text-muted-foreground">
+          You can view all Users here as soon as you add one.
+        </p>
+        <Link href="/users/add" className="mt-4">
+          <Button>Add User</Button>
+        </Link>
+      </div>
+    )}
+  </div>
 
-      {/* Modal for Editing Lawyer */}
-      {selectedLawyer && (
-        <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Edit Lawyer</DialogTitle>
-            </DialogHeader>
-            <EditLawyerForm lawyerId={selectedLawyer._id} onClose={() => setIsEditModalOpen(false)}  />
-          </DialogContent>
-        </Dialog>
-      )}
-    </main>
+  {/* Render the Lawyer Details Modal */}
+  <LawyerDetailsModal
+    handleView={handleCopy}
+    handleEdit={handleEdit}
+    handleDelete={handleDelete}
+    handleCopy={handleCopy}
+    isOpen={isModalOpen}
+    onClose={handleCloseModal}
+    lawyer={selectedLawyer}
+  />
+
+  {/* Modal for Editing Lawyer */}
+  {selectedLawyer && (
+    <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+      <DialogContent className="min-w-full sm:min-w-[80%] md:min-w-[60%] lg:min-w-[50%]">
+        <DialogHeader>
+          <DialogTitle>Edit Lawyer</DialogTitle>
+        </DialogHeader>
+        <EditLawyerForm
+          lawyerId={selectedLawyer._id}
+          onClose={() => setIsEditModalOpen(false)}
+        />
+      </DialogContent>
+    </Dialog>
+  )}
+
+  {/* Custom Delete Confirmation Modal */}
+  {lawyerToDelete && (
+    <ConfirmDeleteModal
+      isOpen={isDeleteModalOpen}
+      onClose={() => setIsDeleteModalOpen(false)}
+      onConfirm={confirmDelete}
+      itemName="Lawyer"
+    />
+  )}
+</main>
+
   );
 };
 

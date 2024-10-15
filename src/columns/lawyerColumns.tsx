@@ -61,6 +61,7 @@ export const LawyerColumns = (expandedRows: any, setExpandedRows: any,  handleVi
         </Badge>
       </div>
     ),
+    enableSorting:true
   },
   //   contact details
   {
@@ -68,14 +69,15 @@ export const LawyerColumns = (expandedRows: any, setExpandedRows: any,  handleVi
     accessorKey: "contactDetails",
     cell: ({ row }: { row: any }) => (
       <div className="flex flex-col gap-2 my-1">
-        <span className="min-w-[120px] whitespace-nowrap overflow-hidden text-ellipsis">
+        <span className="min-w-[120px] w-fit whitespace-nowrap overflow-hidden text-ellipsis">
           {row.original.phone?.toString() || "N/A"}
         </span>
-        <span className="min-w-[150px] w-fit whitespace-nowrap overflow-hidden text-ellipsis">
+        <span className="min-w-[120px] w-fit whitespace-nowrap overflow-hidden text-ellipsis">
           {row.original.email?.toString() || "N/A"}
         </span>
       </div>
     ),
+    enableSorting:true
   },
 // bciRegistrationNo
 {
@@ -96,7 +98,7 @@ export const LawyerColumns = (expandedRows: any, setExpandedRows: any,  handleVi
         viewFunction={() => handleView(row.original)}
         editFunction={() => handleEdit(row.original)}
         deleteFunction={() => handleDelete(row.original)}
-        copyFunction={() => handleCopy(row.original)}
+        // copyFunction={() => handleCopy(row.original)}
       />
     ),
     enableSorting: false,

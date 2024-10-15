@@ -1,13 +1,18 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ILawyer } from '@/interfaces/interface';
+import Actions from '../actions';
 
 interface LawyerDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
   lawyer: ILawyer | null;
+  handleView: Function,
+  handleEdit: Function,
+  handleDelete: Function,
+  handleCopy: Function
 }
 
-export const LawyerDetailsModal: React.FC<LawyerDetailsModalProps> = ({ isOpen, onClose, lawyer }) => {
+export const LawyerDetailsModal: React.FC<LawyerDetailsModalProps> = ({ isOpen, onClose, lawyer, handleEdit, handleDelete, handleCopy, handleView }) => {
   if (!lawyer) return null; // Return null if no lawyer data
 
   // Function to format date as DD/MM/YYYY
@@ -21,11 +26,17 @@ export const LawyerDetailsModal: React.FC<LawyerDetailsModalProps> = ({ isOpen, 
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
-        <DialogHeader>
+      <DialogContent className='min-w-[50vw]'>
+        <DialogHeader className='flex w-full justify-between flex-row items-center'>
           <DialogTitle>Lawyer Details</DialogTitle>
+         <Actions
+        // viewFunction={() => handleView(lawyer)}
+        editFunction={() => handleEdit(lawyer)}
+        deleteFunction={() => handleDelete(lawyer)}
+        copyFunction={() => handleCopy(lawyer)}
+      />
         </DialogHeader>
-        <div className="space-y-4">
+        <div className="space-y-4 p-4 card-shadow rounded-lg ">
           <div className="flex flex-1 gap-4 w-full ">
           <div className='flex flex-1 flex-col gap-2'><strong>Name:</strong> <div className="card-shadow glassmorphism">{lawyer.title} {lawyer.name}</div></div>
           </div>

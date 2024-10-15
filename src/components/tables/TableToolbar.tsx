@@ -11,7 +11,7 @@ import { toast } from "sonner"; // Import toast from Sonner
 import { TableViewOptions } from './TableViewOptions';
 import { deleteByToolbar } from '@/actions/deleteByToolbar';
 import { CalendarDatePicker } from '../calendar-date-picker';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'; // Import Dialog components
+import { Dialog, DialogContent, DialogTrigger, DialogFooter } from '@/components/ui/dialog'; // Import Dialog components
 
 interface DataTableToolbarProps<TData> {
   filter: string;
@@ -47,28 +47,35 @@ export function DataTableToolbar<TData>({
     to: new Date(),
   });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // For custom delete confirmation modal
+  const [selectedRows, setSelectedRows] = useState<string[]>([]); // Store selected rows to delete
+  console.log(isDateFilter)
   const handleDateSelect = ({ from, to }: { from: Date; to: Date }) => {
     setDateRange({ from, to });
     table.getColumn("_createdAt")?.setFilterValue([from, to]); // Filter based on date range
   };
 
+  // Open custom delete modal
+  const openDeleteModal = () => {
+    const selectedRowIds = table.getFilteredSelectedRowModel().rows.map((row: any) => row.original._id);
+    if (selectedRowIds.length > 0) {
+      setSelectedRows(selectedRowIds);
+      setIsDeleteModalOpen(true); // Open delete confirmation modal
+    }
+  };
+
+  // Confirm delete
   const deleteMultiByToolbar = async () => {
-    const selectedRows = table.getFilteredSelectedRowModel().rows.map((row: any) => row.original._id);
-
-    if (selectedRows.length > 0) {
-      const confirmed = confirm(`Are you sure you want to delete ${selectedRows.length} ${filter}?`);
-      if (!confirmed) return;
-
-      try {
-        await deleteByToolbar(selectedRows, API);
-        queryClient.invalidateQueries({ queryKey: [`${QueryKey}`] });
-        toast.success(`${selectedRows.length} ${filter} deleted successfully`);
-        table.resetRowSelection();
-      } catch (error) {
-        console.error("Error deleting users:", error);
-        toast.error("An error occurred while deleting users");
-      }
+    try {
+      await deleteByToolbar(selectedRows, API);
+      queryClient.invalidateQueries({ queryKey: [`${QueryKey}`] });
+      toast.success(`${selectedRows.length} ${filter} deleted successfully`);
+      table.resetRowSelection();
+    } catch (error) {
+      console.error("Error deleting users:", error);
+      toast.error("An error occurred while deleting users");
+    } finally {
+      setIsDeleteModalOpen(false); // Close modal
     }
   };
 
@@ -98,7 +105,7 @@ export function DataTableToolbar<TData>({
           className="h-8 w-[150px] lg:w-[250px]"
         />
 
-        {isDateFilter && (
+        {isDateFilter===true  ? (
           // Date Picker
           <CalendarDatePicker
             date={dateRange}
@@ -106,7 +113,7 @@ export function DataTableToolbar<TData>({
             className="h-9 w-[250px]"
             variant="outline"
           />
-        )}
+        ):null}
         {/* Filter View Options */}
         <TableViewOptions table={table} />
 
@@ -116,7 +123,7 @@ export function DataTableToolbar<TData>({
             <Tooltip.Provider>
               <Tooltip.Root>
                 <Tooltip.Trigger asChild>
-                  <Button variant="outline" size="sm" onClick={deleteMultiByToolbar}>
+                  <Button variant="outline" size="sm" onClick={openDeleteModal}>
                     <TrashIcon className="mr-2 size-4" aria-hidden="true" />
                     ({table.getFilteredSelectedRowModel().rows.length})
                   </Button>
@@ -146,9 +153,24 @@ export function DataTableToolbar<TData>({
               </Tooltip.Content>
             </Tooltip.Root>
           </Tooltip.Provider>
-
         </div>
       </div>
+
+      {/* Custom Delete Confirmation Modal */}
+      <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+        <DialogContent className="max-w-md">
+          <div className="flex flex-col items-center justify-center">
+            <h2 className="text-lg font-semibold">Confirm Deletion</h2>
+            <p className="text-sm text-gray-600 mt-2">
+              Are you sure you want to delete {selectedRows.length} {filter}?
+            </p>
+            <DialogFooter className="flex gap-2 mt-4">
+              <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)}>Cancel</Button>
+              <Button variant="destructive" onClick={deleteMultiByToolbar}>Confirm</Button>
+            </DialogFooter>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

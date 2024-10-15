@@ -23,7 +23,7 @@ export const updateLawyerOptions = (lawyers: ILawyer[]) => {
 
 // Fetch function to get the list of lawyers
 export const fetchLawyers = async () => {
-    console.log("lawyer fetching start");
+    console.log("team fetching start");
     try {
       console.log("getting response");
 
@@ -37,20 +37,18 @@ export const fetchLawyers = async () => {
 
       // Check if the response is not OK (status is not 200)
       if (!response.ok) {
-        throw new Error('Failed to fetch lawyers');
+        throw new Error('Failed to fetch teams');
       }
 
       // Parse the response JSON which contains both `lawyers` and `count`
       const data = await response.json();
       const { lawyers, count } = data;
 
-      console.log("Lawyers--->", lawyers);
-      console.log("Count--->", count);
 
       // Return both lawyers and count
       return { lawyers, count };
     } catch (error) {
-      console.error('Error fetching lawyers:', error);
+      console.error('Error fetching teams:', error);
 
       // Return an empty object with both `lawyers` and `count` in case of error
       return { lawyers: [], count: 0 };
@@ -71,13 +69,13 @@ export const submitLawyerForm = async (data: ILawyer) => {
     });
 
     // Log the response for debugging
-    toast.success("New Lawyer Created");
+    toast.success("New Team Created");
 
     // Return the newly created lawyer object
     return response.data;
   } catch (error) {
-    console.error('Error submitting lawyer form:', error);
-    throw new Error('Failed to submit lawyer form');
+    console.error('Error submitting team form:', error);
+    throw new Error('Failed to submit team form');
   }
 };
 export const updateLawyerForm = async (lawyerId: string, data: ILawyer) => {

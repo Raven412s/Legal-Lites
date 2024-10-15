@@ -18,12 +18,9 @@ import {
 import { ChevronsUpDown, LucideArrowDownAz, LucideArrowUpAz } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
-import { toast } from "sonner";
 import { utils, writeFile } from 'xlsx';
 import { DataTablePagination } from "./TablePagination";
 import { DataTableToolbar } from "./TableToolbar";
-import Actions from "../actions";
-import { AddLawyerForm } from "../forms/Lawyer/AddLawyerForm";
 
 interface DataTableProps<TData, TValue> {
     isDateFilter: boolean,
@@ -176,7 +173,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-4 min-w-max ">
       <DataTableToolbar
-      isDateFilter={false}
+      isDateFilter={isDateFilter}
        FormComponent={FormComponent}
       filter={filter}
         table={table}
@@ -188,85 +185,84 @@ export function DataTable<TData, TValue>({
               API={API}
               QueryKey={QueryKey}
       />
-      <div className="overflow-y-auto rounded-md border shadow-inner max-w-[calc(100vw-340px)] custom-scrollbar">
-     <Table className="w-[80vw] relative">
-  {/* Table Header */}
-  <TableHeader className="sticky top-0">
-    {table.getHeaderGroups().map((headerGroup) => (
-      <TableRow key={headerGroup.id}>
-        {headerGroup.headers.map((header) => (
-          <TableHead
-            className="px-4 py-4"
-            key={header.id}
-            colSpan={header.colSpan}
-            onClick={(e) => {
-              e.preventDefault(); // Prevent default to avoid any unwanted behavior
-              header.column.getToggleSortingHandler(); // Call sorting handler
-            }}
-          >
-            {!header.isPlaceholder && (
-              <div className="flex items-center gap-1">
-                {flexRender(header.column.columnDef.header, header.getContext())}
-                {header.column.id !== "select" && (
-                  header.column.getIsSorted() ? (
-                    header.column.getIsSorted() === "asc" ? (
-                      <LucideArrowUpAz className="w-4 h-4 " />
+<div className="overflow-x-auto overflow-y-auto rounded-md border shadow-inner custom-scrollbar w-full max-w-full">
+  <Table className="min-w-[700px] w-full">
+    {/* Table Header */}
+    <TableHeader className="sticky top-0">
+      {table.getHeaderGroups().map((headerGroup) => (
+        <TableRow key={headerGroup.id}>
+          {headerGroup.headers.map((header) => (
+            <TableHead
+              className="px-2 py-3 text-xs sm:px-4 sm:py-4"
+              key={header.id}
+              colSpan={header.colSpan}
+              onClick={(e) => {
+                e.preventDefault(); // Prevent default to avoid any unwanted behavior
+                header.column.getToggleSortingHandler(); // Call sorting handler
+              }}
+            >
+              {!header.isPlaceholder && (
+                <div className="flex items-center gap-1">
+                  {flexRender(header.column.columnDef.header, header.getContext())}
+                  {header.column.id !== "select" && (
+                    header.column.getIsSorted() ? (
+                      header.column.getIsSorted() === "asc" ? (
+                        <LucideArrowUpAz className="w-3 h-3 sm:w-4 sm:h-4" />
+                      ) : (
+                        <LucideArrowDownAz className="w-3 h-3 sm:w-4 sm:h-4" />
+                      )
                     ) : (
-                      <LucideArrowDownAz className="w-4 h-4" />
+                      <ChevronsUpDown className="w-3 h-3 sm:w-4 sm:h-4" />
                     )
-                  ) : (
-                    <ChevronsUpDown className="w-4 h-4" />
-                  )
-                )}
-              </div>
-            )}
-          </TableHead>
-        ))}
-      </TableRow>
-    ))}
-  </TableHeader>
+                  )}
+                </div>
+              )}
+            </TableHead>
+          ))}
+        </TableRow>
+      ))}
+    </TableHeader>
 
-  {/* Table Body */}
-  <TableBody className="">
-    {data && table.getRowModel().rows.length > 0 ? (
-      table.getRowModel().rows.map((row: any) => (
-        <React.Fragment key={row.id}>
-          <TableRow data-state={row.getIsSelected() && "selected"}>
-            {row.getVisibleCells().map((cell: any) => (
-              <TableCell
-                className="px-4 py-0 "
-                key={cell.id}
-                onClick={(e) => handleCellClick(e, row, cell)}
-              >
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </TableCell>
-            ))}
-            <TableCell className="p-0">
-            </TableCell>
-          </TableRow>
-        </React.Fragment>
-      ))
-    ) : (
-      <TableRow className="flex items-center justify-center min-w-[75rem] h-80">
-        <TableCell className="p-10 mt-10">
-            <div className="flex flex-col items-center justify-center gap-1 text-start">
-            <h3 className="text-2xl font-bold tracking-tight">
-              You have no Lawyers
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              You can view all Users here as soon as you add one.
-            </p>
-            <Link href={"/lawyers/add"} className="mt-4">
-              <Button>Add User</Button>
-            </Link>
-          </div>
-        </TableCell>
-      </TableRow>
-    )}
-  </TableBody>
-</Table>
+    {/* Table Body */}
+    <TableBody>
+      {data && table.getRowModel().rows.length > 0 ? (
+        table.getRowModel().rows.map((row: any) => (
+          <React.Fragment key={row.id}>
+            <TableRow data-state={row.getIsSelected() && "selected"}>
+              {row.getVisibleCells().map((cell: any) => (
+                <TableCell
+                  className="px-2 py-2 text-xs sm:px-4 sm:py-3"
+                  key={cell.id}
+                  onClick={(e) => handleCellClick(e, row, cell)}
+                >
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
+              ))}
+              <TableCell className="p-0" />
+            </TableRow>
+          </React.Fragment>
+        ))
+      ) : (
+        <TableRow className="flex items-center justify-center w-full h-64 sm:min-w-[75rem] sm:h-80">
+          <TableCell className="p-6 sm:p-10">
+            <div className="flex flex-col items-center justify-center gap-1 text-center">
+              <h3 className="text-lg font-bold tracking-tight sm:text-2xl">
+                You have no Lawyers
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                You can view all Users here as soon as you add one.
+              </p>
+              <Link href="/lawyers/add" className="mt-4">
+                <Button>Add User</Button>
+              </Link>
+            </div>
+          </TableCell>
+        </TableRow>
+      )}
+    </TableBody>
+  </Table>
+</div>
 
-      </div>
       {totalData > 5 ? (
         <DataTablePagination
           total={total}

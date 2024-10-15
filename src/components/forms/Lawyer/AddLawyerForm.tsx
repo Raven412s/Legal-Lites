@@ -53,7 +53,7 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Title:</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value || ''}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select a title" />
@@ -140,7 +140,7 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Designation:</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value || ''}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select a designation" />

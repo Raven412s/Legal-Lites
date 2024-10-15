@@ -142,6 +142,16 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onUpload }) => {
           </DialogContent>
         </Dialog>
       )}
+        {/* <div className="container mx-auto p-8">
+      <h1 className="text-2xl font-bold">Image Uploader</h1>
+      <ImageUploader onUpload={handleImageUpload} />
+      {imageUrl && (
+        <div className="mt-4">
+          <h2 className="text-xl">Uploaded Image:</h2>
+          <img src={imageUrl} alt="Uploaded" className="max-w-md w-auto rounded-md" />
+        </div>
+      )}
+    </div> */}
     </div>
   );
 };
