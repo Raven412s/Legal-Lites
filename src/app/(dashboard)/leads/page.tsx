@@ -108,7 +108,7 @@ const [isAddModalOpen,setIsAddModalOpen] = useState(false)
 <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 h-max">
   {/* Header Section */}
   <div className="flex justify-between items-center">
-    <h1 className="text-xl font-semibold md:text-2xl">Team</h1>
+    <h1 className="text-xl font-semibold md:text-2xl">Leads</h1>
   </div>
 
   {/* Data Table Section */}
