@@ -20,7 +20,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMinimized, onToggle }) => {
   };
 
   const renderMenuItem = (item: MenuItem) => (
-    <li key={item.label}>
+    <li key={item.label} className="mx-2">
       <Collapsible open={openItems[item.label]} onOpenChange={() => item.children && handleToggle(item.label)}>
         <CollapsibleTrigger asChild>
           <Button
