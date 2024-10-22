@@ -65,8 +65,8 @@ export const LeadsColumns = (
     cell: ({ row }: { row: any }) => {
       const lead = row.original;
       return (
-        <div className="flex flex-col">
-          <span className="font-bold">{lead.name || "N/A"}</span>
+        <div className="flex flex-col gap-1">
+          <span className="font-bold text-lg">{lead.name || "N/A"}</span>
           <div className="text-sm text-gray-600">
             {lead.court ? `${lead.court} | ${lead.caseType || "N/A"}` : "N/A"}
           </div>
@@ -95,11 +95,11 @@ export const LeadsColumns = (
       };
 
       return (
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-1">
           <select
             value={status}
             onChange={handleChange}
-            className="border rounded p-1 text-sm"
+            className="border rounded w-max p-1 text-sm"
           >
             {statusOptions.map((option) => (
               <option key={option} value={option}>
@@ -111,7 +111,7 @@ export const LeadsColumns = (
             Next Follow-Up: {new Date(lead.nextFollowUp).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' }) || "N/A"}
           </span>
           <span className="text-sm text-gray-800">Last Comment: {lead.comment || "N/A"}</span>
-          <Button variant="default" size="sm" onClick={() => handleEdit(lead)}>
+          <Button variant="default" size="sm" onClick={() => handleEdit(lead)} className="w-max px-2">
             Add Follow-Up
           </Button>
         </div>

@@ -171,7 +171,7 @@ export function DataTable<TData, TValue>({
 };
 
   return (
-    <div className="space-y-4 min-w-max ">
+    <div className="space-y-4 min-w-[80%] ">
       <DataTableToolbar
       isDateFilter={isDateFilter}
        FormComponent={FormComponent}
