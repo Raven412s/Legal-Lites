@@ -1,10 +1,34 @@
-import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
 import Actions from "@/components/actions";
-import { FaStar, FaRegStar } from "react-icons/fa"; // For star icons
 import { Button } from "@/components/ui/button";
+import { useState } from "react"; // Import useState for managing state
+import { FaRegStar, FaStar } from "react-icons/fa";
 
-/** @type import(@tanstack/react-table).ColumnDef<any> */
+// Assuming you have a list of statuses you want to use
+const statusOptions = ["Fresh", "Open", "File Received", "Not Interested"];
+
+// Function to update the lead's status in the database
+const updateLeadStatus = async (leadId: string, newStatus: string) => {
+  try {
+    // Replace this with your API endpoint
+    const response = await fetch(`/api/leads/${leadId}`, {
+      method: 'PATCH', // Use PATCH or PUT based on your API
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ status: newStatus }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to update status');
+    }
+
+    // Handle success if needed
+    console.log('Status updated successfully');
+  } catch (error) {
+    console.error('Error updating status:', error);
+  }
+};
+
 export const LeadsColumns = (
   expandedRows: any,
   setExpandedRows: any,
@@ -13,7 +37,7 @@ export const LeadsColumns = (
   handleDelete: Function,
   handleCopy: Function,
 ) => [
-  // Serial Number & Strong Lead
+  // Serial Number & Strong Lead (remains unchanged)
   {
     id: "serial-number",
     header: () => <span className="w-max">Sr.</span>,
@@ -34,7 +58,7 @@ export const LeadsColumns = (
     enableHiding: false,
   },
 
-  // Lead Details (Name, Court, Case Type, Phone, Email)
+  // Lead Details (remains unchanged)
   {
     id: "lead-details",
     header: () => <span className="w-max">Details</span>,
@@ -55,21 +79,38 @@ export const LeadsColumns = (
     enableSorting: false,
   },
 
-  // Status, Follow-up Date, Last Comment
+  // Editable Status Field
   {
     id: "status",
     header: () => <span className="w-max">Status</span>,
     cell: ({ row }: { row: any }) => {
       const lead = row.original;
-      const lastComment = lead.comment ? lead.comment : "N/A"; // Get the last comment or default to "N/A"
+      console.log("lead._id",lead._id)
+      const [status, setStatus] = useState(lead.status as string); // Local state for status
+
+      const handleChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const newStatus = event.target.value;
+        setStatus(newStatus); // Update local state
+        await updateLeadStatus(lead._id, newStatus); // Update the status in the database
+      };
 
       return (
         <div className="flex flex-col">
-          <span>{lead.status || "N/A"}</span>
+          <select
+            value={status}
+            onChange={handleChange}
+            className="border rounded p-1 text-sm"
+          >
+            {statusOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
           <span className="text-sm text-gray-500">
             Next Follow-Up: {new Date(lead.nextFollowUp).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' }) || "N/A"}
           </span>
-          <span className="text-sm text-gray-800">Last Comment: {lastComment}</span>
+          <span className="text-sm text-gray-800">Last Comment: {lead.comment || "N/A"}</span>
           <Button variant="default" size="sm" onClick={() => handleEdit(lead)}>
             Add Follow-Up
           </Button>
@@ -79,7 +120,7 @@ export const LeadsColumns = (
     enableSorting: false,
   },
 
-  // Actions
+  // Actions (remains unchanged)
   {
     id: "actions",
     header: "Actions",
