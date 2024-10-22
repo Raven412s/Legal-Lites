@@ -49,7 +49,7 @@ export function DataTableToolbar<TData>({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // For custom delete confirmation modal
   const [selectedRows, setSelectedRows] = useState<string[]>([]); // Store selected rows to delete
-  console.log(isDateFilter)
+
   const handleDateSelect = ({ from, to }: { from: Date; to: Date }) => {
     setDateRange({ from, to });
     table.getColumn("_createdAt")?.setFilterValue([from, to]); // Filter based on date range
@@ -86,7 +86,7 @@ export function DataTableToolbar<TData>({
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button variant="outline" className="hover:bg-transparent">
-              Add Team
+              Add {filter}
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[600px] p-6">
@@ -119,7 +119,7 @@ export function DataTableToolbar<TData>({
 
         {/* Delete and Other Icons */}
         <div className="flex items-center gap-2">
-          {table.getFilteredSelectedRowModel().rows.length > 0 && (
+          { table && table.getFilteredSelectedRowModel().rows.length > 0 && (
             <Tooltip.Provider>
               <Tooltip.Root>
                 <Tooltip.Trigger asChild>

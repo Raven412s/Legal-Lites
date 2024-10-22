@@ -86,7 +86,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMinimized, onToggle }) => {
                 <span className='px-2 py-3 border-2 rounded-full'>
                   <Image src={logo} alt="Logo" width={32} height={32} />
                 </span>
-                <span className="text-white text-2xl font-extrabold">Legal-Lites</span>
+                <span className="text-white italic text-2xl font-extrabold">Legal-Lites</span>
               </span>
             )}
           </div>

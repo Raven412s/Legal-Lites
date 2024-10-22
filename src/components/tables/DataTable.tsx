@@ -225,7 +225,7 @@ export function DataTable<TData, TValue>({
 
     {/* Table Body */}
     <TableBody>
-      {data && table.getRowModel().rows.length > 0 ? (
+      {data && table.getRowModel().rows.length > 0 && (
         table.getRowModel().rows.map((row: any) => (
           <React.Fragment key={row.id}>
             <TableRow data-state={row.getIsSelected() && "selected"}>
@@ -241,24 +241,7 @@ export function DataTable<TData, TValue>({
               <TableCell className="p-0" />
             </TableRow>
           </React.Fragment>
-        ))
-      ) : (
-        <TableRow className="flex items-center justify-center w-full h-64 sm:min-w-[75rem] sm:h-80">
-          <TableCell className="p-6 sm:p-10">
-            <div className="flex flex-col items-center justify-center gap-1 text-center">
-              <h3 className="text-lg font-bold tracking-tight sm:text-2xl">
-                You have no Lawyers
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                You can view all Users here as soon as you add one.
-              </p>
-              <Link href="/lawyers/add" className="mt-4">
-                <Button>Add User</Button>
-              </Link>
-            </div>
-          </TableCell>
-        </TableRow>
-      )}
+        )))}
     </TableBody>
   </Table>
 </div>

@@ -1,7 +1,7 @@
 import { connectToDatabase } from "@/functions/connectDB";
 import { Lawyer } from "@/models/lawyers.model";
 import { NextRequest, NextResponse } from "next/server";
-import { ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb'
 import { lawyerSchema } from "@/zod-schemas/zLawyer";
 import { z } from "zod";
 

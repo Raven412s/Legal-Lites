@@ -78,6 +78,7 @@ export const submitLawyerForm = async (data: ILawyer) => {
     throw new Error('Failed to submit team form');
   }
 };
+
 export const updateLawyerForm = async (lawyerId: string, data: ILawyer) => {
   try {
     console.log("Updating lawyer data:", data);

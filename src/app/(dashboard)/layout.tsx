@@ -1,7 +1,7 @@
 "use client"
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import Sidebar from '@/components/sidebar/Sidebar';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import React, { useState } from 'react';
 import { Toaster } from 'sonner';
 const queryClient = new QueryClient();
