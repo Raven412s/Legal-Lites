@@ -1,31 +1,28 @@
 import Actions from "@/components/actions";
 import { Button } from "@/components/ui/button";
-import { useState } from "react"; // Import useState for managing state
+import { useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
 
-// Assuming you have a list of statuses you want to use
 const statusOptions = ["Fresh", "Open", "File Received", "Not Interested"];
 
-// Function to update the lead's status in the database
-const updateLeadStatus = async (leadId: string, newStatus: string) => {
+// Function to update the lead's status or strong field in the database
+const updateLeadField = async (leadId: string, updatedField: object) => {
   try {
-    // Replace this with your API endpoint
     const response = await fetch(`/api/leads/${leadId}`, {
-      method: 'PATCH', // Use PATCH or PUT based on your API
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ status: newStatus }),
+      body: JSON.stringify(updatedField),
     });
 
     if (!response.ok) {
-      throw new Error('Failed to update status');
+      throw new Error('Failed to update lead');
     }
 
-    // Handle success if needed
-    console.log('Status updated successfully');
+    console.log('Lead updated successfully');
   } catch (error) {
-    console.error('Error updating status:', error);
+    console.error('Error updating lead:', error);
   }
 };
 
@@ -34,44 +31,50 @@ export const LeadsColumns = (
   setExpandedRows: any,
   handleView: Function,
   handleEdit: Function,
+  handleAddFollowUp: Function,
   handleDelete: Function,
   handleCopy: Function,
 ) => [
-  // Serial Number & Strong Lead (remains unchanged)
-  {
-    id: "serial-number",
-    header: () => <span className="w-max">Sr.</span>,
-    cell: (info: any) => {
-      const lead = info.row.original;
-      return (
-        <div className="flex flex-col items-start">
-          <div className="flex items-center gap-2">
-            <span>{Number(info.row.id) + 1}-</span>
-            {lead.strong ? <FaStar style={{ color: "goldenrod" }} className="w-8 h-8" /> : <FaRegStar style={{ color: "goldenrod" }} className="w-8 h-8" />}
-          </div>
-          <span className="text-sm text-gray-500">
-            {new Date(lead.createdAt).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' }) || "N/A"}
-          </span>
-        </div>
-      );
-    },
-    enableHiding: false,
-  },
-
-  // Lead Details (remains unchanged)
   {
     id: "lead-details",
     header: () => <span className="w-max">Details</span>,
     cell: ({ row }: { row: any }) => {
       const lead = row.original;
+      const [isStrong, setIsStrong] = useState(lead.strong);
+
+      const toggleStrong = async () => {
+        const newStrongValue = !isStrong;
+        setIsStrong(newStrongValue); // Toggle locally
+        await updateLeadField(lead._id, { strong: newStrongValue }); // Update in the database
+      };
+
       return (
         <div className="flex flex-col gap-1">
-          <span className="font-bold text-lg">{lead.name || "N/A"}</span>
+          <div className="flex gap-2 items-center">
+            <span className="font-bold text-lg">{lead.name || "N/A"}</span>
+               <div
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={toggleStrong} // Click handler for toggling strong value
+          >
+            {isStrong ? (
+              <FaStar style={{ color: "goldenrod" }} className="w-5 h-5" />
+            ) : (
+              <FaRegStar style={{ color: "goldenrod" }} className="w-5 h-5" />
+            )}
+          </div>
+        </div>
           <div className="text-sm text-gray-600">
             {lead.court ? `${lead.court} | ${lead.caseType || "N/A"}` : "N/A"}
           </div>
           <div className="text-sm">
             <span>{lead.phone || "N/A"}</span>
+          </div>
+          <div className="text-sm">
+            <span>lead created on: {"  "}
+            <span className="text-sm text-gray-500">
+            {new Date(lead.createdAt).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' }) || "N/A"}
+          </span>
+            </span>
           </div>
         </div>
       );
@@ -79,19 +82,17 @@ export const LeadsColumns = (
     enableSorting: false,
   },
 
-  // Editable Status Field
   {
     id: "status",
     header: () => <span className="w-max">Status</span>,
     cell: ({ row }: { row: any }) => {
       const lead = row.original;
-      console.log("lead._id",lead._id)
-      const [status, setStatus] = useState(lead.status as string); // Local state for status
+      const [status, setStatus] = useState(lead.status as string);
 
       const handleChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         const newStatus = event.target.value;
-        setStatus(newStatus); // Update local state
-        await updateLeadStatus(lead._id, newStatus); // Update the status in the database
+        setStatus(newStatus);
+        await updateLeadField(lead._id, { status: newStatus });
       };
 
       return (
@@ -111,7 +112,7 @@ export const LeadsColumns = (
             Next Follow-Up: {new Date(lead.nextFollowUp).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' }) || "N/A"}
           </span>
           <span className="text-sm text-gray-800">Last Comment: {lead.comment || "N/A"}</span>
-          <Button variant="default" size="sm" onClick={() => handleEdit(lead)} className="w-max px-2">
+          <Button variant="default" size="sm" onClick={() => handleAddFollowUp(lead._id)} className="w-max px-2">
             Add Follow-Up
           </Button>
         </div>
@@ -120,7 +121,6 @@ export const LeadsColumns = (
     enableSorting: false,
   },
 
-  // Actions (remains unchanged)
   {
     id: "actions",
     header: "Actions",

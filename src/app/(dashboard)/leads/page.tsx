@@ -5,6 +5,7 @@ import { LeadsColumns } from '@/columns/leadsColumns'
 import { EditLawyerForm } from '@/components/forms/Lawyer/EditLawyerForm'; // Import the Edit Lawyer form
 import { AddLeadsForm } from '@/components/forms/Leads/AddLeadsForm'
 import { EditLeadForm } from '@/components/forms/Leads/EditLeadsForm';
+import UpdateCommentFollowUpForm from '@/components/forms/Leads/UpdateCommentFollowUpForm';
 import { ConfirmDeleteModal } from '@/components/modals/ConfirmDeleteModal'
 import { LeadsDetailsModal } from '@/components/modals/LeadsDetailsModal'
 import { DataTable } from '@/components/tables/DataTable'
@@ -34,6 +35,19 @@ const ViewLeadsPage = () => {
 const [isAddModalOpen,setIsAddModalOpen] = useState(false)
   const queryClient = useQueryClient();
   const router = useRouter();
+  const [isFollowUpModalOpen, setIsFollowUpModalOpen] = useState(false);
+const [selectedLeadForFollowUp, setSelectedLeadForFollowUp] = useState<string | null>(null);
+
+const handleAddFollowUp = (leadsId: string) => {
+  setSelectedLeadForFollowUp(leadsId);
+  setIsFollowUpModalOpen(true);
+};
+
+const closeFollowUpModal = () => {
+  setIsFollowUpModalOpen(false);
+  setSelectedLeadForFollowUp(null);
+};
+
 
   // States for pagination, search, and filters
   const [page, setPage] = useState(1);
@@ -71,16 +85,30 @@ const [isAddModalOpen,setIsAddModalOpen] = useState(false)
     setIsDeleteModalOpen(true); // Open the delete confirmation modal
   };
 
-  const handleCopy = (rowData: any) => {
+  const handleCopy = (rowData: ILeads) => {
     try {
-      const jsonData = JSON.stringify(rowData, null, 2);
-      navigator.clipboard.writeText(jsonData);
+      const formattedData = `
+      Name: ${rowData.name || "N/A"}
+      Strong Lead: ${rowData.strong ? "Yes" : "No"}
+      Phone: ${rowData.phone || "N/A"}
+      Court: ${rowData.court || "N/A"}
+      Case Type: ${rowData.caseType || "N/A"}
+      Lead Source: ${rowData.leadSource || "N/A"}
+      Status: ${rowData.status || "N/A"}
+      Next Follow-Up: ${rowData.nextFollowUp ? new Date(rowData.nextFollowUp).toLocaleDateString('en-US') : "N/A"}
+      Last Comment: ${rowData.comment || "N/A"}
+      `;
+
+      // Copy the formatted data to the clipboard
+      navigator.clipboard.writeText(formattedData);
+
       toast.success("Row data copied to clipboard!");
     } catch (error) {
       console.error("Failed to copy row data to clipboard:", error);
       toast.error("Failed to copy data to clipboard.");
     }
   };
+
 
   const handleView = (lawyer: ILeads) => {
     console.log(lawyer)
@@ -101,7 +129,8 @@ const [isAddModalOpen,setIsAddModalOpen] = useState(false)
       setIsDeleteModalOpen(false); // Close the modal after deletion
     }
   };
-  const columns = LeadsColumns(expandedRows, setExpandedRows, handleView, handleEdit, handleDelete, handleCopy);
+
+  const columns = LeadsColumns(expandedRows, setExpandedRows, handleView, handleEdit, handleAddFollowUp, handleDelete, handleCopy,);
   const totalPages = data ? Math.ceil(data.total / rowPerPage) : 1;
 
   return (
@@ -193,6 +222,20 @@ const [isAddModalOpen,setIsAddModalOpen] = useState(false)
       </DialogContent>
     </Dialog>
   )}
+
+        <Dialog open={isFollowUpModalOpen} onOpenChange={setIsFollowUpModalOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add Follow-Up</DialogTitle>
+            </DialogHeader>
+            {selectedLeadForFollowUp && (
+              <UpdateCommentFollowUpForm
+                leadsId={selectedLeadForFollowUp}
+                onClose={closeFollowUpModal}
+              />
+            )}
+          </DialogContent>
+        </Dialog>
 
   {/* Custom Delete Confirmation Modal */}
   {leadToDelete && (

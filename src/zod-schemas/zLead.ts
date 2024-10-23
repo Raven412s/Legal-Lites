@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // Schema for individual follow-up records
-const followUpRecordSchema = z.object({
+export const followUpRecordSchema = z.object({
   comment: z.string().min(1, { message: "Comment is required" }), // Required string for comment
   nextFollowUp: z.union([z.string(), z.date()])  // Date can be string or Date object
     .transform((val) => {

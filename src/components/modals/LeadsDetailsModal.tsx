@@ -27,7 +27,7 @@ export const LeadsDetailsModal: React.FC<LeadsDetailsModalProps> = ({ isOpen, on
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className='min-w-[70vw] max-h-[90%] overflow-scroll '>
+      <DialogContent className='min-w-[55vw] max-h-[90%] overflow-scroll '>
         <DialogHeader className='flex w-full justify-between flex-row items-center'>
           <DialogTitle>Leads Details</DialogTitle>
          <Actions

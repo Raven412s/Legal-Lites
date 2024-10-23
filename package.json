@@ -60,6 +60,8 @@
     "dotenv": "^16.4.5",
     "embla-carousel-react": "^8.3.0",
     "input-otp": "^1.2.4",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
     "lucide-react": "^0.447.0",
     "mongoose": "^8.7.0",
     "multer": "^1.4.5-lts.1",

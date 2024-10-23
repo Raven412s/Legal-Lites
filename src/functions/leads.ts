@@ -24,6 +24,28 @@ export const submitLeadsForm = async (data: ILeads) => {
     }
   };
 
+  export const addFollowUpForm = async (LeadId: string, updatedField: object) => {
+    try {
+      console.log("Updating lead data:", updatedField);
+
+      // Send PUT request to update the lawyer by ID
+      const response = await axios.patch(`/api/leads/${LeadId}`, updatedField, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      // Log the response for debugging
+      toast.success("Lead Updated Successfully");
+
+      // Return the updated lawyer object
+      return response.data;
+    } catch (error) {
+      console.error('Error updating Lead form:', error);
+      throw new Error('Failed to update Lead form');
+    }
+  };
+
   export const updateLeadsForm = async (LeadId: string, data: ILeads) => {
     try {
       console.log("Updating lead data:", data);
