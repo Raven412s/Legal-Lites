@@ -1,5 +1,6 @@
 import Actions from "@/components/actions";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
@@ -84,26 +85,28 @@ export const LeadsColumns = (
       const lead = row.original;
       const [status, setStatus] = useState(lead.status as string);
       const queryClient = useQueryClient();
-      const handleChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const newStatus = event.target.value;
+      const handleChange = async (newStatus: string) => {
         setStatus(newStatus);
         await updateLeadField(lead._id, { status: newStatus });
-        queryClient.invalidateQueries({ queryKey: ["leads"] })
+        queryClient.invalidateQueries({ queryKey: ["leads"] });
       };
+
 
       return (
         <div className="flex flex-col gap-1 w-[200px]">
-          <select
-            value={status}
-            onChange={handleChange}
-            className="border rounded w-max p-1 text-sm"
-          >
-            {statusOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
+         <Select value={status} onValueChange={handleChange}>
+  <SelectTrigger className="border rounded w-max h-max !p-0 text-sm">
+    <SelectValue placeholder="Select status" />
+  </SelectTrigger>
+  <SelectContent>
+    {statusOptions.map((option) => (
+      <SelectItem key={option} value={option}>
+        {option}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
+
           <span className="text-sm text-gray-500">
             Next Follow-Up: {new Date(lead.nextFollowUp).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' }) || "N/A"}
           </span>
