@@ -30,18 +30,6 @@ export const LawyerColumns = (expandedRows: any, setExpandedRows: any,  handleVi
     enableSorting: false,
     enableHiding: false,
     },
-    //  sr. no.
-{
-    id:"serial-number",
-    header: () => <span className="w-max">Sr.</span>,
-    cell: (info: any) => (
-      <span className="min-w-[150px] w-fit whitespace-nowrap overflow-hidden text-ellipsis">
-        {Number(info.row.id)+1}
-      </span>
-    ),
-    enableHiding: false,
-},
-
 // PERSONAL DETAILS
   {
     header: () => <span className="w-max">personal Details</span>,

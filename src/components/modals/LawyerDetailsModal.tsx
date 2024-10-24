@@ -26,7 +26,7 @@ export const LawyerDetailsModal: React.FC<LawyerDetailsModalProps> = ({ isOpen, 
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className='min-w-[50vw]'>
+      <DialogContent >
         <DialogHeader className='flex w-full justify-between flex-row items-center'>
           <DialogTitle>Lawyer Details</DialogTitle>
          <Actions
