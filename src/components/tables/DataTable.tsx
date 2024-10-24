@@ -1,5 +1,4 @@
-
-import { Button } from "@/components/ui/button";
+import noData from "@/public/images/no.png"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
     ColumnDef,
@@ -16,7 +15,7 @@ import {
     VisibilityState,
 } from "@tanstack/react-table";
 import { ChevronsUpDown, LucideArrowDownAz, LucideArrowUpAz } from "lucide-react";
-import Link from "next/link";
+import Image from "next/image";
 import React, { useState } from "react";
 import { utils, writeFile } from 'xlsx';
 import { DataTablePagination } from "./TablePagination";
@@ -186,64 +185,68 @@ export function DataTable<TData, TValue>({
               QueryKey={QueryKey}
       />
 <div className="overflow-x-auto overflow-y-auto rounded-md border shadow-inner custom-scrollbar w-full max-w-full">
-  <Table className="min-w-[700px] w-full">
-    {/* Table Header */}
-    <TableHeader className="sticky top-0">
-      {table.getHeaderGroups().map((headerGroup) => (
-        <TableRow key={headerGroup.id}>
-          {headerGroup.headers.map((header) => (
-            <TableHead
-              className="px-2 py-3 text-xs sm:px-4 sm:py-4"
-              key={header.id}
-              colSpan={header.colSpan}
-              onClick={(e) => {
-                e.preventDefault(); // Prevent default to avoid any unwanted behavior
-                header.column.getToggleSortingHandler(); // Call sorting handler
-              }}
-            >
-              {!header.isPlaceholder && (
-                <div className="flex items-center gap-1">
-                  {flexRender(header.column.columnDef.header, header.getContext())}
-                  {header.column.id !== "select" && (
-                    header.column.getIsSorted() ? (
-                      header.column.getIsSorted() === "asc" ? (
-                        <LucideArrowUpAz className="w-3 h-3 sm:w-4 sm:h-4" />
-                      ) : (
-                        <LucideArrowDownAz className="w-3 h-3 sm:w-4 sm:h-4" />
-                      )
-                    ) : (
-                      <ChevronsUpDown className="w-3 h-3 sm:w-4 sm:h-4" />
-                    )
-                  )}
-                </div>
-              )}
-            </TableHead>
-          ))}
-        </TableRow>
-      ))}
-    </TableHeader>
-
-    {/* Table Body */}
-    <TableBody>
-      {data && table.getRowModel().rows.length > 0 && (
-        table.getRowModel().rows.map((row: any) => (
-          <React.Fragment key={row.id}>
-            <TableRow data-state={row.getIsSelected() && "selected"}>
-              {row.getVisibleCells().map((cell: any) => (
-                <TableCell
-                  className="px-2 py-2 text-xs sm:px-4 sm:py-3"
-                  key={cell.id}
-                  onClick={(e) => handleCellClick(e, row, cell)}
-                >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
-              ))}
-              <TableCell className="p-0" />
-            </TableRow>
-          </React.Fragment>
-        )))}
-    </TableBody>
-  </Table>
+{data.length > 0 ?
+       <Table className="min-w-[700px] w-full">
+       {/* Table Header */}
+       <TableHeader className="sticky top-0">
+         {table.getHeaderGroups().map((headerGroup) => (
+           <TableRow key={headerGroup.id}>
+             {headerGroup.headers.map((header) => (
+               <TableHead
+                 className="px-2 py-3 text-xs sm:px-4 sm:py-4"
+                 key={header.id}
+                 colSpan={header.colSpan}
+                 onClick={(e) => {
+                   e.preventDefault(); // Prevent default to avoid any unwanted behavior
+                   header.column.getToggleSortingHandler(); // Call sorting handler
+                 }}
+               >
+                 {!header.isPlaceholder && (
+                   <div className="flex items-center gap-1">
+                     {flexRender(header.column.columnDef.header, header.getContext())}
+                     {header.column.id !== "select" && (
+                       header.column.getIsSorted() ? (
+                         header.column.getIsSorted() === "asc" ? (
+                           <LucideArrowUpAz className="w-3 h-3 sm:w-4 sm:h-4" />
+                         ) : (
+                           <LucideArrowDownAz className="w-3 h-3 sm:w-4 sm:h-4" />
+                         )
+                       ) : (
+                         <ChevronsUpDown className="w-3 h-3 sm:w-4 sm:h-4" />
+                       )
+                     )}
+                   </div>
+                 )}
+               </TableHead>
+             ))}
+           </TableRow>
+         ))}
+       </TableHeader>
+           <TableBody>
+           {data && table.getRowModel().rows.length > 0 && (
+             table.getRowModel().rows.map((row: any) => (
+               <React.Fragment key={row.id}>
+                 <TableRow data-state={row.getIsSelected() && "selected"}>
+                   {row.getVisibleCells().map((cell: any) => (
+                     <TableCell
+                       className="px-2 py-2 text-xs sm:px-4 sm:py-3"
+                       key={cell.id}
+                       onClick={(e) => handleCellClick(e, row, cell)}
+                     >
+                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                     </TableCell>
+                   ))}
+                   <TableCell className="p-0" />
+                 </TableRow>
+               </React.Fragment>
+             )))}
+         </TableBody>
+     </Table>
+      :
+      <div className=" p-4 text-center h-[350px]">
+      <p className=" text-xl  my-[12%]">You have no data on this table.</p>
+      </div>
+    }
 </div>
 
       {totalData > 5 ? (

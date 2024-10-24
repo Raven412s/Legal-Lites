@@ -51,7 +51,7 @@ const ViewLawyerPage = () => {
     mutationFn: (id: string) => deleteByID(id, "lawyers"),
     onSuccess: () => {
       toast.success("User deleted successfully!");
-      queryClient.invalidateQueries({ queryKey: ["lawyers"] });
+      queryClient.invalidateQueries({ queryKey: ["lawyers"] })
     },
     onError: (err: any) => {
       toast.error(`Error: ${err.message}`);

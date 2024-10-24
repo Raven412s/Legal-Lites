@@ -12,12 +12,13 @@ import { getLeadById } from "@/actions/getLeadByID";
 import { followUpRecordSchema, leadsSchema } from "@/zod-schemas/zLead";
 import { useRouter } from "next/navigation";
 import { comment } from "postcss";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const UpdateCommentFollowUpForm: React.FC<{ leadsId: string; onClose: () => void }> = ({ leadsId, onClose }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [lead,setLead]= useState<ILeads>()
-
+  const queryClient = useQueryClient();
   const form = useForm<TFollowUpRecord>({
     resolver: zodResolver(followUpRecordSchema), // Reuse the schema if it validates the required fields
   });
@@ -72,6 +73,7 @@ export const UpdateCommentFollowUpForm: React.FC<{ leadsId: string; onClose: () 
     } catch (error) {
         console.error("Failed to update lead:", error);
     } finally {
+        queryClient.invalidateQueries({ queryKey: ["leads"] })
         setIsLoading(false);
     }
 };

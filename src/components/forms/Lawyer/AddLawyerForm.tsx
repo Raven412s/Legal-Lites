@@ -11,11 +11,12 @@ import { submitLawyerForm } from "@/functions/lawyer";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-
+  const queryClient = useQueryClient();
   const addLawyerForm = useForm<ILawyer>({
     resolver: zodResolver(lawyerSchema),
   });
@@ -33,6 +34,7 @@ export const AddLawyerForm: React.FC<LawyerFormProps> = ({ onClose }) => {
     } catch (error) {
       console.error("Failed to submit lawyer form:", error);
     } finally {
+      queryClient.invalidateQueries({ queryKey: ["lawyers"] })
       setIsLoading(false);
     }
   };

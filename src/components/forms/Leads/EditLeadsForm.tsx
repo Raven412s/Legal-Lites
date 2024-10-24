@@ -11,6 +11,7 @@ import { Leads } from "@/models/leads.model";
 import { leadsSchema } from "@/zod-schemas/zLead";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -19,7 +20,7 @@ import { useForm } from "react-hook-form";
 export const EditLeadForm: React.FC<LeadsFormProps> = ({ onClose, leadsId }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-
+  const queryClient = useQueryClient();
   const editLeadForm = useForm<ILeads>({
     resolver: zodResolver(leadsSchema),
   });
@@ -72,6 +73,7 @@ export const EditLeadForm: React.FC<LeadsFormProps> = ({ onClose, leadsId }) => 
     } catch (error) {
       console.error("Failed to submit lead form:", error);
     } finally {
+        queryClient.invalidateQueries({ queryKey: ["leads"] })
       setIsLoading(false);
     }
   };
