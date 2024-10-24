@@ -53,11 +53,11 @@ const closeFollowUpModal = () => {
   const [page, setPage] = useState(1);
   const [rowPerPage, setRowPerPage] = useState(10);
   const [search, setSearch] = useState("");
-  const [designation, setDesignation] = useState("");
+  const [date, setDate] = useState("");
 
   const { data, isLoading, isError, error, refetch } = useQuery<LeadsResponse, Error>({
-    queryKey: ["leads", { page, rowPerPage, search, designation }],
-    queryFn: () => getAllLeads({ page, pageSize: rowPerPage, search, designation }),
+    queryKey: ["leads", { page, rowPerPage, search, date }],
+    queryFn: () => getAllLeads({ page, pageSize: rowPerPage, search, date }),
     placeholderData: (prev) => prev,
     staleTime: 5000,
   });

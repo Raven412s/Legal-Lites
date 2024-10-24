@@ -1,17 +1,15 @@
-import * as Tooltip from '@radix-ui/react-tooltip';
-import { Cross2Icon } from "@radix-ui/react-icons";
-import { Table } from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import React, { useState } from "react";
-import { FileDown, PlusCircle, RefreshCcw, TrashIcon } from "lucide-react";
-import { TableFacetedFilter } from "./TableFacetedFilter";
-import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner"; // Import toast from Sonner
-import { TableViewOptions } from './TableViewOptions';
 import { deleteByToolbar } from '@/actions/deleteByToolbar';
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogFooter, DialogTrigger } from '@/components/ui/dialog'; // Import Dialog components
+import { Input } from "@/components/ui/input";
+import * as Tooltip from '@radix-ui/react-tooltip';
+import { useQueryClient } from "@tanstack/react-query";
+import { Table } from "@tanstack/react-table";
+import { FileDown, TrashIcon } from "lucide-react";
+import React, { useState } from "react";
+import { toast } from "sonner"; // Import toast from Sonner
 import { CalendarDatePicker } from '../calendar-date-picker';
-import { Dialog, DialogContent, DialogTrigger, DialogFooter } from '@/components/ui/dialog'; // Import Dialog components
+import { TableViewOptions } from './TableViewOptions';
 
 interface DataTableToolbarProps<TData> {
   filter: string;
@@ -33,7 +31,6 @@ export function DataTableToolbar<TData>({
   API,
   table,
   filters,
-
   setSearch,
   exportToExcel,
   search,
@@ -52,7 +49,7 @@ export function DataTableToolbar<TData>({
 
   const handleDateSelect = ({ from, to }: { from: Date; to: Date }) => {
     setDateRange({ from, to });
-    table.getColumn("_createdAt")?.setFilterValue([from, to]); // Filter based on date range
+    table.getColumn("createdAt")?.setFilterValue([from, to]); // Filter based on date range
   };
 
   // Open custom delete modal

@@ -8,10 +8,10 @@ export async function GET(request: Request) {
 
     // Create a URL object to access the search parameters
     const url = new URL(request.url);
-    const search = url.searchParams.get("search") || ""; // General search
-    const role = url.searchParams.get("role") || ""; // If you want to filter by role
-    const page = url.searchParams.get("page") || "1"; // Default to "1" if not present
-    const pageSize = url.searchParams.get("pageSize") || "10"; // Default to "10" if not present
+    const search = url.searchParams.get("search") || ""; // General search, which might include createdAt in mm/dd/yyyy format
+    const role = url.searchParams.get("role") || "";
+    const page = url.searchParams.get("page") || "1";
+    const pageSize = url.searchParams.get("pageSize") || "10";
 
     // Convert pagination query parameters
     const pageNum = parseInt(page, 10) || 1;
@@ -21,8 +21,20 @@ export async function GET(request: Request) {
     // Build query object for searching and filtering
     const query: any = {};
 
-    // General search that matches any field
-    if (search) {
+    // Check if the search input matches a date format (mm/dd/yyyy)
+    const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+    if (dateRegex.test(search)) {
+      // If the search is in the format of mm/dd/yyyy, treat it as a createdAt search
+      const [month, day, year] = search.split("/").map(Number);
+      const startOfDay = new Date(year, month - 1, day, 0, 0, 0); // Start of the day
+      const endOfDay = new Date(year, month - 1, day, 23, 59, 59); // End of the day
+
+      query["createdAt"] = {
+        $gte: startOfDay,
+        $lte: endOfDay,
+      };
+    } else if (search) {
+      // General search that matches any field
       query["$or"] = [
         { name: { $regex: search, $options: "i" } },
         { phone: { $regex: search, $options: "i" } },
@@ -31,7 +43,6 @@ export async function GET(request: Request) {
         { leadSource: { $regex: search, $options: "i" } },
         { comment: { $regex: search, $options: "i" } },
         { status: { $regex: search, $options: "i" } },
-        // You can include other fields as needed
       ];
     }
 

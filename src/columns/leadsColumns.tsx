@@ -4,7 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
 
-const statusOptions = ["Fresh", "Open", "File Received", "Not Interested"];
+const statusOptions = ["Fresh", "Open", "File Received", "Not Interested", "Pending" ,"Active"];
 
 // Function to update the lead's status or strong field in the database
 const updateLeadField = async (leadId: string, updatedField: object) => {
@@ -71,13 +71,6 @@ export const LeadsColumns = (
           <div className="text-sm">
             <span>{lead.phone || "N/A"}</span>
           </div>
-          <div className="text-sm">
-            <span>lead created on: {"  "}
-            <span className="text-sm text-gray-500">
-            {new Date(lead.createdAt).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' }) || "N/A"}
-          </span>
-            </span>
-          </div>
         </div>
       );
     },
@@ -99,7 +92,7 @@ export const LeadsColumns = (
       };
 
       return (
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 w-[200px]">
           <select
             value={status}
             onChange={handleChange}
@@ -115,7 +108,7 @@ export const LeadsColumns = (
             Next Follow-Up: {new Date(lead.nextFollowUp).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' }) || "N/A"}
           </span>
           <span className="text-sm text-gray-800">Last Comment: {lead.comment || "N/A"}</span>
-          <Button variant="default" size="sm" onClick={() => handleAddFollowUp(lead._id)} className="w-max px-2">
+          <Button variant="default" size="sm" onClick={() => handleAddFollowUp(lead._id)} className="px-2 w-max">
             Add Follow-Up
           </Button>
         </div>
@@ -124,6 +117,23 @@ export const LeadsColumns = (
     enableSorting: false,
   },
 
+  {
+    id: "createdAt",
+    header: "Created At",
+    cell: ({ row }: any) => {
+        const lead = row.original
+    return (
+         <div className="text-sm">
+        <span>lead created on: {"  "}
+        <span className="text-sm text-gray-500">
+        {new Date(lead.createdAt).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' }) || "N/A"}
+      </span>
+        </span>
+      </div>
+      )},
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     id: "actions",
     header: "Actions",

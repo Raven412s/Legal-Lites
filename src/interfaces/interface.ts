@@ -31,10 +31,10 @@ export interface ILawyer {
     phone: string;
     court: string;
     nextFollowUp: Date;
-    caseType: "Civil" | "Matrimonial" | "Criminal" ;
+    caseType: "Civil" | "Matrimonial" | "Criminal" | "Divorce" | "Corporate" | "Employment" | "Adoption";
     leadSource: "Walk-in" | "Phone" | "Social Media" | "Referral" | "Local Marketing" | "Other";
     comment: string;  // Added field for comment
-    status: "Fresh" | "Open" | "File Received" | "Not Interested";  // Added field for status
+    status: "Fresh" | "Open" | "File Received" | "Not Interested" | "Pending" | "Active" // Added field for status
     followUpRecord: TFollowUpRecord[]
   }
 

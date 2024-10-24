@@ -21,7 +21,7 @@ const LeadSchema = new Schema({
   },
   caseType: {
     type: String,
-    enum: ["Civil", "Matrimonial", "Criminal"],
+    enum: ["Civil", "Matrimonial", "Criminal", "Divorce", "Corporate", "Employment", "Adoption"],
     required: true,
   },
   leadSource: {
@@ -39,7 +39,7 @@ const LeadSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ["Fresh", "Open", "File Received", "Not Interested"],
+    enum: ["Fresh", "Open", "File Received", "Not Interested", "Pending" ,"Active"],
     default: "Fresh",
     required: true,
   },

@@ -70,15 +70,7 @@ const ViewLawyerPage = () => {
     setIsDeleteModalOpen(true); // Open the delete confirmation modal
   };
 
-  const handleCopy = (rowData: any) => {
-    try {
-      const jsonData = JSON.stringify(rowData, null, 2);
-      navigator.clipboard.writeText(jsonData);
-      toast.success("Row data copied to clipboard!");
-    } catch (error) {
-      console.error("Failed to copy row data to clipboard:", error);
-      toast.error("Failed to copy data to clipboard.");
-    }
+  const handleCopy = () => {
   };
 
   const handleView = (lawyer: ILawyer) => {

@@ -400,7 +400,7 @@ export const CalendarDatePicker = React.forwardRef<
             }
           `}
         </style>
-        <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+        <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen} >
           <PopoverTrigger asChild>
             <Button
               id="date"
@@ -545,7 +545,7 @@ export const CalendarDatePicker = React.forwardRef<
           {isPopoverOpen && (
             <PopoverContent
               className="w-auto h-[400px]"
-              align="start"
+              align="end"
               avoidCollisions={false}
               onInteractOutside={handleClose}
               onEscapeKeyDown={handleClose}

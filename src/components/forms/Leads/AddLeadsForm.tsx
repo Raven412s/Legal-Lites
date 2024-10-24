@@ -133,10 +133,14 @@ export const AddLeadsForm: React.FC<LeadsFormProps> = ({ onClose }) => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="Civil">Civil</SelectItem>
-                    <SelectItem value="Matrimonial">Matrimonial</SelectItem>
-                    <SelectItem value="Criminal">Criminal</SelectItem>
-                  </SelectContent>
+                      <SelectItem value="Civil">Civil</SelectItem>
+                      <SelectItem value="Matrimonial">Matrimonial</SelectItem>
+                      <SelectItem value="Criminal">Criminal</SelectItem>
+                      <SelectItem value="Divorce">Divorce</SelectItem>
+                      <SelectItem value="Corporate">Corporate</SelectItem>
+                      <SelectItem value="Employment">Employment</SelectItem>
+                      <SelectItem value="Adoption">Adoption</SelectItem>
+                    </SelectContent>
                 </Select>
                 <FormMessage />
               </FormItem>

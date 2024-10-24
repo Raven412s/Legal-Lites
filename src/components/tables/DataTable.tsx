@@ -179,10 +179,10 @@ export function DataTable<TData, TValue>({
         filters={filters!}
         linkToAdd={linkToAdd}
         exportToExcel={exportToExcel}
-              setSearch={setSearch}
-              search={search}
-              API={API}
-              QueryKey={QueryKey}
+        setSearch={setSearch}
+        search={search}
+        API={API}
+        QueryKey={QueryKey}
       />
 <div className="overflow-x-auto overflow-y-auto rounded-md border shadow-inner custom-scrollbar w-full max-w-full">
 {data.length > 0 ?

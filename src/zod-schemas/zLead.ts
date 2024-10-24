@@ -34,7 +34,7 @@ export const leadsSchema = z.object({
       return val;
     })
     .refine((val) => !isNaN(val.getTime()), { message: "Invalid date" }), // Ensure the parsed date is valid
-  caseType: z.enum(["Civil", "Matrimonial", "Criminal"], {
+  caseType: z.enum(["Civil", "Matrimonial", "Criminal",  "Divorce", "Corporate", "Employment", "Adoption"], {
     required_error: "Case Type is required",
   }), // Enum with required case types
   leadSource: z.enum(
@@ -54,7 +54,7 @@ export const leadsSchema = z.object({
       return val;
     })
     .default(() => new Date()), // Date with default value of current date
-  status: z.enum(["Fresh", "Open", "File Received", "Not Interested"], {
+  status: z.enum(["Fresh", "Open", "File Received", "Not Interested", "Pending" ,"Active"], {
     required_error: "Status is required",
   }).default("Fresh"), // Enum with default value of Fresh
   comment: z.string().optional().default(''), // Optional string for comment with default empty string
