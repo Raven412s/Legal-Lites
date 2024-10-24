@@ -1,5 +1,6 @@
 import Actions from "@/components/actions";
 import { Button } from "@/components/ui/button";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
 
@@ -41,11 +42,12 @@ export const LeadsColumns = (
     cell: ({ row }: { row: any }) => {
       const lead = row.original;
       const [isStrong, setIsStrong] = useState(lead.strong);
-
+      const queryClient = useQueryClient();
       const toggleStrong = async () => {
         const newStrongValue = !isStrong;
         setIsStrong(newStrongValue); // Toggle locally
         await updateLeadField(lead._id, { strong: newStrongValue }); // Update in the database
+        queryClient.invalidateQueries({ queryKey: ["leads"] })
       };
 
       return (
@@ -88,11 +90,12 @@ export const LeadsColumns = (
     cell: ({ row }: { row: any }) => {
       const lead = row.original;
       const [status, setStatus] = useState(lead.status as string);
-
+      const queryClient = useQueryClient();
       const handleChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         const newStatus = event.target.value;
         setStatus(newStatus);
         await updateLeadField(lead._id, { status: newStatus });
+        queryClient.invalidateQueries({ queryKey: ["leads"] })
       };
 
       return (
